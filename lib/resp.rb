@@ -3,6 +3,7 @@ require 'resp/version'
 module RESP
   SerializerError = Class.new(RuntimeError)
   ParserError = Class.new(RuntimeError)
+  RError = Class.new(RuntimeError)
 
   SIMPLE_STRING = '+'.freeze
   ERROR = '-'.freeze
@@ -12,156 +13,74 @@ module RESP
 
   TERMINATOR = "\r\n".freeze
 
+  EMPTY_ARRAY_RESPONSE = "#{ARRAY}0#{TERMINATOR}".freeze
+  NULL_ARRAY_RESPONSE = "#{ARRAY}-1#{TERMINATOR}".freeze
+  EMPTY_BULK_STRING_RESPONSE = "#{BULK_STRING}0#{TERMINATOR}#{TERMINATOR}"
+  NULL_BULK_STRING_RESPONSE = "#{BULK_STRING}-1#{TERMINATOR}"
+
+  EMPTY_STRING = ''.freeze
+  EMPTY_ARRAY = [].freeze
+
   def self.command(command)
     serialize(Array(command))
   end
 
   def self.serialize(body)
+    return NULL_BULK_STRING_RESPONSE if body.nil?
+
     case body
     when String, Symbol
-      RBulkString.serialize(body)
-    when Integer
-      RInteger.serialize(body)
-    when Array
-      RArray.serialize(body)
-    when RError
-      RError.serialize(body)
-    else
-      raise SerializerError.new('Unsupported type')
-    end
-  end
-
-  def self.parse(response)
-    case response[0]
-    when SIMPLE_STRING
-      RSimpleString.parse(response)
-    when ERROR
-      RError.parse(response)
-    when INTEGER
-      RInteger.parse(response)
-    when BULK_STRING
-      RBulkString.parse(response)
-    when ARRAY
-      RArray.parse(response)
-    else
-      raise ParserError.new('Unsupported response')
-    end
-  end
-
-  class RError < RuntimeError
-    def self.serialize(error)
-      message = error.message
-      "#{ERROR}#{message}#{TERMINATOR}"
-    end
-
-    def self.parse(response)
-      message = response[1..-3]
-      new(message)
-    end
-  end
-
-  module RSimpleString
-    def self.serialize(body)
-      if body.to_s.include?("\n")
-        raise SerializerError.new('No newlines are allowed in Simple Strings')
-      end
-
-      "+#{body}#{TERMINATOR}"
-    end
-
-    def self.parse(response)
-      response[1..-3]
-    end
-  end
-
-  module RInteger
-    def self.serialize(body)
-      "#{INTEGER}#{body}#{TERMINATOR}"
-    end
-
-    def self.parse(response)
-      response[1..-3].to_i
-    end
-  end
-
-  module RBulkString
-    EMPTY = "#{BULK_STRING}0#{TERMINATOR}#{TERMINATOR}"
-    NULL = "#{BULK_STRING}-1#{TERMINATOR}"
-
-    EMPTY_STRING = ''.freeze
-
-    def self.serialize(body)
-      return NULL if body.nil?
-      return EMPTY if body.empty?
+      return EMPTY_BULK_STRING_RESPONSE if body.empty?
 
       "#{BULK_STRING}#{body.size}#{TERMINATOR}#{body}#{TERMINATOR}"
-    end
+    when Integer
+      "#{INTEGER}#{body}#{TERMINATOR}"
+    when Array
+      return EMPTY_ARRAY_RESPONSE if body.empty?
 
-    def self.parse(response)
-      return if response == NULL
-      return EMPTY_STRING if response == EMPTY
+      serialized_body = body.map { |e| serialize(e) }.join
 
-      size = response[1..-1].to_i
-      response[-size-2..-3]
+      "#{ARRAY}#{body.size}#{TERMINATOR}#{serialized_body}"
+    when RError
+      "#{ERROR}#{body.message}#{TERMINATOR}"
+    else
+      raise SerializerError.new("#{body.class} type is unsupported")
     end
   end
 
-  module RArray
-    EMPTY = "#{ARRAY}0#{TERMINATOR}".freeze
-    NULL = "#{ARRAY}-1#{TERMINATOR}".freeze
+  def self.parse(io)
+    line = io.gets(TERMINATOR)
 
-    EMPTY_ARRAY = [].freeze
+    case line[0]
+    when SIMPLE_STRING
+      line[1..-3]
+    when ERROR
+      RError.new(line[1..-3])
+    when INTEGER
+      line[1..-3].to_i
+    when BULK_STRING
+      return if line == NULL_BULK_STRING_RESPONSE
+      return EMPTY_STRING if line == EMPTY_BULK_STRING_RESPONSE
 
-    class << self
-      def serialize(body)
-        return NULL if body.nil?
-        return EMPTY if body.empty?
+      body_length = line[1..-1].to_i
 
-        serialized_body = body.map { |e| RESP.serialize(e) }.join
-
-        "#{ARRAY}#{body.size}#{TERMINATOR}#{serialized_body}"
+      case body_length
+      when -1 then nil
+      when 0 then ''
+      else
+        # string length plus CRLF
+        body = io.read(body_length + 2)
+        body[0..-3]
       end
+    when ARRAY
+      return if line == NULL_ARRAY_RESPONSE
+      return EMPTY_ARRAY if line == EMPTY_ARRAY_RESPONSE
 
-      def parse(response)
-        parse!(response.dup)
-      end
+      size = line[1..-1].to_i
 
-      private
-
-      def parse!(response)
-        return if response == NULL
-        return EMPTY_ARRAY if response == EMPTY
-
-        size = response.slice!(0, elem_length(response))[1..-3].to_i
-
-        Array.new(size) do
-          case response[0]
-          when SIMPLE_STRING, ERROR, INTEGER
-            RESP.parse(response.slice!(0, elem_length(response)))
-          when ARRAY
-            parse!(response)
-          when BULK_STRING
-            elem_length = elem_length(response)
-            size = response[1...elem_length].to_i
-
-            elem_length += (size + 2) if size != -1
-
-            RESP.parse(response.slice!(0, elem_length))
-          else
-            raise "Array: #{response} parse error!"
-          end
-        end
-      end
-
-      def elem_length(response)
-        i = 1
-
-        while response[i-1..i] != TERMINATOR
-          i += 1
-        end
-
-        i + 1
-      end
+      Array.new(size) { parse(io) }
+    else
+      raise ParserError.new('Unsupported response type')
     end
   end
 end

@@ -1,44 +1,12 @@
 require 'resp'
 
 RSpec.describe RESP do
-  describe 'RSimpleString' do
-    describe '.serialize' do
-      def serialize(body)
-        described_class::RSimpleString.serialize(body)
-      end
-
-      specify do
-        expect(serialize('OK')).to eq("+OK\r\n")
-      end
-
-      specify do
-        expect(serialize(:OK)).to eq("+OK\r\n")
-      end
-
-      specify do
-        error_msg = 'No newlines are allowed in Simple Strings'
-        error = RESP::SerializerError
-        expect { serialize("NOT\nOK") }.to raise_error(error, error_msg)
-      end
+  describe '.serialize' do
+    def serialize(body)
+      described_class::serialize(body)
     end
 
-    describe '.parse' do
-      def parse(response)
-        described_class::RSimpleString.parse(response)
-      end
-
-      specify do
-        expect(parse("+OK\r\n")).to eq('OK')
-      end
-    end
-  end
-
-  describe 'RInteger' do
-    describe '.serialize' do
-      def serialize(body)
-        described_class::RInteger.serialize(body)
-      end
-
+    context 'Integer' do
       specify do
         expect(serialize(0)).to eq(":0\r\n")
       end
@@ -48,27 +16,7 @@ RSpec.describe RESP do
       end
     end
 
-    describe '.parse' do
-      def parse(response)
-        described_class::RInteger.parse(response)
-      end
-
-      specify do
-        expect(parse(":0\r\n")).to eq(0)
-      end
-
-      specify do
-        expect(parse(":1000\r\n")).to eq(1000)
-      end
-    end
-  end
-
-  describe 'RBulkString' do
-    describe '.serialize' do
-      def serialize(body)
-        described_class::RBulkString.serialize(body)
-      end
-
+    context 'Bulk String' do
       specify do
         expect(serialize('')).to eq("$0\r\n\r\n")
       end
@@ -86,78 +34,16 @@ RSpec.describe RESP do
       end
     end
 
-    describe '.parse' do
-      def parse(response)
-        described_class::RBulkString.parse(response)
-      end
-
-      specify do
-        expect(parse("$-1\r\n")).to eq(nil)
-      end
-
-      specify do
-        expect(parse("$0\r\n\r\n")).to eq('')
-      end
-
-      specify do
-        expect(parse("$6\r\nfoobar\r\n")).to eq('foobar')
-      end
-
-      specify do
-        expect(parse("$12\r\nfoobarfoobar\r\n")).to eq('foobarfoobar')
-      end
-    end
-  end
-
-  describe 'RError' do
-    describe '.serialize' do
-      def serialize(error)
-        described_class::RError.serialize(error)
-      end
-
+    context 'RError' do
       specify do
         error = described_class::RError.new('Bar')
         expect(serialize(error)).to eq("-Bar\r\n")
       end
     end
 
-    describe '.parse' do
-      def parse(response)
-        described_class::RError.parse(response)
-      end
-
-      specify do
-        err = parse("-Error message\r\n")
-        expect(err).to be_a(described_class::RError)
-        expect(err.message).to eq('Error message')
-      end
-
-      specify do
-        err = parse("-ERR unknown command 'foobar'\r\n")
-        expect(err).to be_a(described_class::RError)
-        expect(err.message).to eq("ERR unknown command 'foobar'")
-      end
-
-      specify do
-        err = parse("-WRONGTYPE Operation against a key holding the wrong kind of value\r\n")
-        expect(err).to be_a(described_class::RError)
-        expect(err.message).to eq('WRONGTYPE Operation against a key holding the wrong kind of value')
-      end
-    end
-  end
-
-  describe 'RArray' do
-    describe '.serialize' do
-      def serialize(body)
-        described_class::RArray.serialize(body)
-      end
-
+    context 'RArray' do
       specify do
         expect(serialize([])).to eq("*0\r\n")
-      end
-
-      specify do
-        expect(serialize(nil)).to eq("*-1\r\n")
       end
 
       specify do
@@ -180,11 +66,75 @@ RSpec.describe RESP do
       end
     end
 
-    describe '.parse' do
-      def parse(response)
-        described_class::RArray.parse(response)
+    context 'SerializerError' do
+      specify do
+        error = described_class::SerializerError
+        expect { serialize({}) }.to raise_error(error, 'Hash type is unsupported')
+      end
+    end
+  end
+
+  describe '.parse' do
+    def parse(io)
+      io = StringIO.new(io) if io.is_a?(String)
+      described_class::parse(io)
+    end
+
+    context 'Simple String' do
+      specify do
+        expect(parse("+OK\r\n")).to eq('OK')
+      end
+    end
+
+    context 'Integer' do
+      specify do
+        expect(parse(":0\r\n")).to eq(0)
       end
 
+      specify do
+        expect(parse(":1000\r\n")).to eq(1000)
+      end
+    end
+
+    context 'Bulk String' do
+      specify do
+        expect(parse("$-1\r\n")).to eq(nil)
+      end
+
+      specify do
+        expect(parse("$0\r\n\r\n")).to eq('')
+      end
+
+      specify do
+        expect(parse("$6\r\nfoobar\r\n")).to eq('foobar')
+      end
+
+      specify do
+        expect(parse("$12\r\nfoobarfoobar\r\n")).to eq('foobarfoobar')
+      end
+    end
+
+    context 'RError' do
+      specify do
+        err = parse("-Error message\r\n")
+        expect(err).to be_a(described_class::RError)
+        expect(err.message).to eq('Error message')
+      end
+
+      specify do
+        err = parse("-ERR unknown command 'foobar'\r\n")
+        expect(err).to be_a(described_class::RError)
+        expect(err.message).to eq("ERR unknown command 'foobar'")
+      end
+
+      specify do
+        err = parse("-WRONGTYPE Operation against a key holding the wrong kind of value\r\n")
+        expect(err).to be_a(described_class::RError)
+        expect(err.message).to eq('WRONGTYPE Operation against a key holding the wrong kind of value')
+      end
+    end
+
+    context 'Array' do
       specify do
         response = "*3\r\n$3\r\nfoo\r\n$-1\r\n$3\r\nbar\r\n"
         expect(parse(response)).to eq(['foo', nil, 'bar'])
@@ -207,19 +157,28 @@ RSpec.describe RESP do
       end
 
       specify do
-        result = "*5\r\n:1\r\n:2\r\n:3\r\n:4\r\n$12\r\nfoobarfoobar\r\n"
-        expect(parse(result)).to eq([1, 2, 3, 4, 'foobarfoobar'])
+        response = "*5\r\n:1\r\n:2\r\n:3\r\n:4\r\n$12\r\nfoobarfoobar\r\n"
+        expect(parse(response)).to eq([1, 2, 3, 4, 'foobarfoobar'])
       end
 
       specify do
-        result = "*10\r\n:1\r\n:2\r\n:3\r\n:4\r\n:5\r\n:6\r\n:7\r\n:8\r\n:9\r\n:10\r\n"
-        expect(parse(result)).to eq((1..10).to_a)
+        response = "*10\r\n:1\r\n:2\r\n:3\r\n:4\r\n:5\r\n:6\r\n:7\r\n:8\r\n:9\r\n:10\r\n"
+        expect(parse(response)).to eq((1..10).to_a)
       end
 
       specify do
-        result = "*2\r\n*3\r\n:1\r\n:2\r\n*1\r\n+OK\r\n*2\r\n$3\r\nFoo\r\n-Bar\r\n"
+        response = "*2\r\n*3\r\n:1\r\n:2\r\n*1\r\n+OK\r\n*2\r\n$3\r\nFoo\r\n-Bar\r\n"
         err = described_class::RError.new('Bar')
-        expect(parse(result)).to eq([[1, 2, ['OK']], ['Foo', err]])
+        expect(parse(response)).to eq([[1, 2, ['OK']], ['Foo', err]])
+      end
+    end
+
+    context 'ParserError' do
+      specify do
+        error = described_class::ParserError
+        error_msg = 'Unsupported response type'
+
+        expect { parse("#3\r0\nWTF") }.to raise_error(error, error_msg)
       end
     end
   end
