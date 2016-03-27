@@ -1,76 +1,68 @@
-require 'resp'
+require 'resp/protocol'
 
-RSpec.describe RESP do
-  describe '.serialize' do
-    def serialize(body)
-      described_class::serialize(body)
+RSpec.describe RESP::Protocol do
+  describe '.build_command' do
+    def build(command)
+      described_class::build_command(command)
     end
 
-    context 'Integer' do
-      specify do
-        expect(serialize(0)).to eq(":0\r\n")
-      end
-
-      specify do
-        expect(serialize(1000)).to eq(":1000\r\n")
-      end
+    specify do
+      expect(build([0])).to eq("*1\r\n$1\r\n0\r\n")
     end
 
-    context 'Bulk String' do
-      specify do
-        expect(serialize('')).to eq("$0\r\n\r\n")
-      end
-
-      specify do
-        expect(serialize(nil)).to eq("$-1\r\n")
-      end
-
-      specify do
-        expect(serialize('foobar')).to eq("$6\r\nfoobar\r\n")
-      end
-
-      specify do
-        expect(serialize(:foobar)).to eq("$6\r\nfoobar\r\n")
-      end
+    specify do
+      expect(build([1000])).to eq("*1\r\n$4\r\n1000\r\n")
     end
 
-    context 'RError' do
-      specify do
-        error = described_class::RError.new('Bar')
-        expect(serialize(error)).to eq("-Bar\r\n")
-      end
+    specify do
+      expect(build([''])).to eq("*1\r\n$0\r\n\r\n")
     end
 
-    context 'RArray' do
-      specify do
-        expect(serialize([])).to eq("*0\r\n")
-      end
-
-      specify do
-        expect(serialize(['foo', 'bar'])).to eq("*2\r\n$3\r\nfoo\r\n$3\r\nbar\r\n")
-      end
-
-      specify do
-        expect(serialize([1, 2 ,3])).to eq("*3\r\n:1\r\n:2\r\n:3\r\n")
-      end
-
-      specify do
-        out = "*5\r\n:1\r\n:2\r\n:3\r\n:4\r\n$12\r\nfoobarfoobar\r\n"
-        expect(serialize([1, 2, 3, 4, 'foobarfoobar'])).to eq(out)
-      end
-
-      specify do
-        out = "*2\r\n*3\r\n:1\r\n:2\r\n:3\r\n*2\r\n$3\r\nFoo\r\n-Bar\r\n"
-        err = described_class::RError.new('Bar')
-        expect(serialize([[1, 2, 3], ['Foo', err]])).to eq(out)
-      end
+    specify do
+      expect(build([nil])).to eq("*1\r\n$-1\r\n")
     end
 
-    context 'SerializerError' do
-      specify do
-        error = described_class::SerializerError
-        expect { serialize({}) }.to raise_error(error, 'Hash type is unsupported')
-      end
+    specify do
+      expect(build(['foobar'])).to eq("*1\r\n$6\r\nfoobar\r\n")
+    end
+
+    specify do
+      expect(build([:foobar])).to eq("*1\r\n$6\r\nfoobar\r\n")
+    end
+
+    specify do
+      expect(build([])).to eq("*0\r\n")
+    end
+
+    specify do
+      expect(build(['foo', 'bar'])).to eq("*2\r\n$3\r\nfoo\r\n$3\r\nbar\r\n")
+    end
+
+    specify do
+      expect(build([1, 2 ,3])).to eq("*3\r\n$1\r\n1\r\n$1\r\n2\r\n$1\r\n3\r\n")
+    end
+
+    specify do
+      input = [:zrevrangebyscore, 'myzset', Float::INFINITY, -Float::INFINITY]
+      command = "$16\r\nzrevrangebyscore"
+      values = "$4\r\n+inf\r\n$4\r\n-inf\r\n"
+      serialized = ['*4', command, "$6\r\nmyzset", values].join("\r\n")
+      expect(build(input)).to eq(serialized)
+    end
+
+    specify do
+      out = "*2\r\n$1\r\n1\r\n$12\r\nfoobarfoobar\r\n"
+      expect(build([1, 'foobarfoobar'])).to eq(out)
+    end
+
+    specify do
+      error = described_class::SerializerError
+      expect { build([{}]) }.to raise_error(error, 'Hash type is unsupported')
+    end
+
+    specify do
+      out = "*3\r\n$5\r\nwatch\r\n$3\r\nfoo\r\n$3\r\nbar\r\n"
+      expect(build([:watch, ['foo', 'bar']])).to eq(out)
     end
   end
 
@@ -149,7 +141,7 @@ RSpec.describe RESP do
       end
 
       specify do
-        expect(parse("*2\r\n$3\r\nfoo\r\n$3\r\nbar\r\n")).to eq(['foo', 'bar'])
+        expect(parse("*2\r\n$0\r\n\r\n$3\r\nbar\r\n")).to eq(['', 'bar'])
       end
 
       specify do
