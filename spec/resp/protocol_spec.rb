@@ -19,10 +19,6 @@ RSpec.describe RESP::Protocol do
     end
 
     specify do
-      expect(build([nil])).to eq("*1\r\n$-1\r\n")
-    end
-
-    specify do
       expect(build(['foobar'])).to eq("*1\r\n$6\r\nfoobar\r\n")
     end
 
@@ -43,21 +39,8 @@ RSpec.describe RESP::Protocol do
     end
 
     specify do
-      input = [:zrevrangebyscore, 'myzset', Float::INFINITY, -Float::INFINITY]
-      command = "$16\r\nzrevrangebyscore"
-      values = "$4\r\n+inf\r\n$4\r\n-inf\r\n"
-      serialized = ['*4', command, "$6\r\nmyzset", values].join("\r\n")
-      expect(build(input)).to eq(serialized)
-    end
-
-    specify do
       out = "*2\r\n$1\r\n1\r\n$12\r\nfoobarfoobar\r\n"
       expect(build([1, 'foobarfoobar'])).to eq(out)
-    end
-
-    specify do
-      error = described_class::SerializerError
-      expect { build([{}]) }.to raise_error(error, 'Hash type is unsupported')
     end
 
     specify do

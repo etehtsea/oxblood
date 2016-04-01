@@ -22,12 +22,6 @@ module RESP
     TERMINATOR = "\r\n".freeze
     private_constant :TERMINATOR
 
-    POSITIVE_INFINITY = "$4\r\n+inf\r\n".freeze
-    private_constant :POSITIVE_INFINITY
-
-    NEGATIVE_INFINITY = "$4\r\n-inf\r\n".freeze
-    private_constant :NEGATIVE_INFINITY
-
     EMPTY_ARRAY_RESPONSE = "#{ARRAY}0#{TERMINATOR}".freeze
     private_constant :EMPTY_ARRAY_RESPONSE
 
@@ -46,19 +40,10 @@ module RESP
     EMPTY_ARRAY = [].freeze
     private_constant :EMPTY_ARRAY
 
+    COMMAND_HEADER = [ARRAY, TERMINATOR].join.freeze
+    private_constant :COMMAND_HEADER
+
     class << self
-      # Serialize command to string according to Redis Protocol
-      # @see http://www.redis.io/topics/protocol
-      # @raise [SerializerError] if unable to serialize given command
-      # @param [Array] command array consisting of redis command and arguments
-      # @return [String] serialized command
-      def build_command(command)
-        serialized_body = serialize_command(command)
-
-        # FIXME FLATTEN
-        "#{ARRAY}#{command.flatten.size}#{TERMINATOR}#{serialized_body}"
-      end
-
       # Parse redis response
       # @see http://redis.io/topics/protocol
       # @raise [ParserError] if unable to parse response
@@ -102,26 +87,41 @@ module RESP
         end
       end
 
+      # Serialize command to string according to Redis Protocol
+      # @note Redis don't support nested arrays
+      # @note Written in non-idiomatic ruby without error handling due to
+      #       performance reasons
+      # @see http://www.redis.io/topics/protocol#sending-commands-to-a-redis-server
+      # @raise [SerializerError] if unable to serialize given command
+      # @param [Array] command array consisting of redis command and arguments
+      # @return [String] serialized command
+      def build_command(command)
+        result = COMMAND_HEADER.dup
+        size = 0
+        command.each do |c|
+          if Array === c
+            c.each do |e|
+              append!(e, result)
+              size += 1
+            end
+          else
+            append!(c, result)
+            size += 1
+          end
+        end
+
+        result.insert(1, size.to_s)
+      end
+
       private
 
-      def serialize_command(command)
-        return NULL_BULK_STRING_RESPONSE if command.nil?
-
-        case command
-        when Float::INFINITY
-          POSITIVE_INFINITY
-        when -Float::INFINITY
-          NEGATIVE_INFINITY
-        when String, Symbol, Integer, Float
-          command = command.to_s
-          return EMPTY_BULK_STRING_RESPONSE if command.empty?
-
-          "#{BULK_STRING}#{command.bytesize}#{TERMINATOR}#{command}#{TERMINATOR}"
-        when Array
-          command.map { |e| serialize_command(e) }.join
-        else
-          raise SerializerError.new("#{command.class} type is unsupported")
-        end
+      def append!(elem, command)
+        elem = elem.to_s
+        command << BULK_STRING
+        command << elem.bytesize.to_s
+        command << TERMINATOR
+        command << elem
+        command << TERMINATOR
       end
     end
   end
