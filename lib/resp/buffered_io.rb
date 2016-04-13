@@ -1,4 +1,5 @@
 module RESP
+  # @private
   class BufferedIO
     def initialize(socket)
       @socket = socket
