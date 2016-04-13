@@ -6,11 +6,8 @@ class Redis
   module Connection
     class Resp
       def self.connect(config)
-        connection = if config[:scheme] == 'unix'
-          ::RESP::Connection.connect_unix(config[:path], config[:timeout])
-        else
-          ::RESP::Connection.connect_tcp(config[:host], config[:port], config[:timeout], config[:connect_timeout])
-        end
+        conn_type = config[:scheme] == 'unix' ? :unix : :tcp
+        connection = ::RESP::Connection.public_send(:"connect_#{conn_type}", config)
 
         new(connection)
       end

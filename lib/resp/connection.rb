@@ -8,12 +8,21 @@ module RESP
 
     class << self
       # Connect to Redis server through TCP
-      # @param [String] host to connect to
-      # @param [Integer] port Redis listens on
-      # @param [Float] timeout socket read timeout
-      # @param [Float] connect_timeout socket connect timeout
+      #
+      # @param [Hash] options Connection options
+      #
+      # @option options [String] :host ('localhost') Hostname or IP address to connect to
+      # @option options [Integer] :port (5672) Port Redis server listens on
+      # @option options [Float] :timeout (1.0) socket read timeout
+      # @option options [Float] :connect_timeout (1.0) socket connect timeout
+      #
       # @return [RESP::Connection] connection instance
-      def connect_tcp(host, port, timeout, connect_timeout)
+      def connect_tcp(options = {})
+        host = options.fetch(:host, 'localhost')
+        port = options.fetch(:port, 6379)
+        timeout = options.fetch(:timeout, 1.0)
+        connect_timeout = options.fetch(:connect_timeout, 1.0)
+
         socket = Socket.tcp(host, port, connect_timeout: connect_timeout)
         socket.setsockopt(Socket::IPPROTO_TCP, Socket::TCP_NODELAY, 1)
 
@@ -21,10 +30,19 @@ module RESP
       end
 
       # Connect to Redis server through UNIX socket
-      # @param [String] path UNIX socket path
-      # @param [Float] timeout socket read timeout
+      #
+      # @param [Hash] options Connection options
+      #
+      # @option options [String] :path UNIX socket path
+      # @option options [Float] :timeout socket read timeout
+      #
+      # @raise [KeyError] if :path was not passed
+      #
       # @return [RESP::Connection] connection instance
-      def connect_unix(path, timeout)
+      def connect_unix(options = {})
+        path = options.fetch(:path)
+        timeout = options.fetch(:timeout, 1.0)
+
         socket = ::Socket.unix(path)
         new(socket, timeout)
       end
