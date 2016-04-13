@@ -33,7 +33,7 @@ c.read_response # => "value"
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/etehtsea/resp.
+Bug reports and pull requests are welcome on [GitHub](https://github.com/etehtsea/resp-rb).
 
 
 ## License
