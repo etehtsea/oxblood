@@ -35,8 +35,7 @@ module RESP
         if IO.select([@socket], nil, nil, timeout)
           retry
         else
-          # FIXME (do own error)
-          raise Redis::TimeoutError
+          raise Connection::TimeoutError
         end
       end
 
