@@ -7,6 +7,16 @@ module RESP
     TimeoutError = Class.new(RuntimeError)
 
     class << self
+      # Open Redis connection
+      #
+      # @param [Hash] options Connection options
+      #
+      # @option (see .connect_tcp)
+      # @option (see .connect_unix)
+      def open(options = {})
+        options.key?(:path) ? connect_unix(options) : connect_tcp(options)
+      end
+
       # Connect to Redis server through TCP
       #
       # @param [Hash] options Connection options
@@ -34,7 +44,7 @@ module RESP
       # @param [Hash] options Connection options
       #
       # @option options [String] :path UNIX socket path
-      # @option options [Float] :timeout socket read timeout
+      # @option options [Float] :timeout (1.0) socket read timeout
       #
       # @raise [KeyError] if :path was not passed
       #
