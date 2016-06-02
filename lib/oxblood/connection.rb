@@ -1,7 +1,7 @@
-require 'resp/protocol'
-require 'resp/buffered_io'
+require 'oxblood/protocol'
+require 'oxblood/buffered_io'
 
-module RESP
+module Oxblood
   # Class responsible for connection maintenance
   class Connection
     TimeoutError = Class.new(RuntimeError)
@@ -26,7 +26,7 @@ module RESP
       # @option options [Float] :timeout (1.0) socket read timeout
       # @option options [Float] :connect_timeout (1.0) socket connect timeout
       #
-      # @return [RESP::Connection] connection instance
+      # @return [Oxblood::Connection] connection instance
       def connect_tcp(options = {})
         host = options.fetch(:host, 'localhost')
         port = options.fetch(:port, 6379)
@@ -48,7 +48,7 @@ module RESP
       #
       # @raise [KeyError] if :path was not passed
       #
-      # @return [RESP::Connection] connection instance
+      # @return [Oxblood::Connection] connection instance
       def connect_unix(options = {})
         path = options.fetch(:path)
         timeout = options.fetch(:timeout, 1.0)
@@ -69,7 +69,7 @@ module RESP
     # @param [Array] command Array of command name with it's args
     # @return [Integer] Number of bytes written to socket
     def send_command(command)
-      write(RESP::Protocol.build_command(command))
+      write(Oxblood::Protocol.build_command(command))
     end
 
     # FIXME: docs
@@ -126,7 +126,7 @@ module RESP
     #       sending command.
     # @todo Raise specific error if server has nothing to answer.
     def read_response
-      RESP::Protocol.parse(self)
+      Oxblood::Protocol.parse(self)
     end
 
     # FIXME: docs

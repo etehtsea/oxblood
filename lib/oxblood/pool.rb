@@ -1,8 +1,8 @@
 require 'connection_pool'
-require 'resp/session'
-require 'resp/pipeline'
+require 'oxblood/session'
+require 'oxblood/pipeline'
 
-module RESP
+module Oxblood
   class Pool
     # Initialize connection pool
     #

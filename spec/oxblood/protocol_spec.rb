@@ -1,6 +1,6 @@
-require 'resp/protocol'
+require 'oxblood/protocol'
 
-RSpec.describe RESP::Protocol do
+RSpec.describe Oxblood::Protocol do
   describe '.build_command' do
     def build(command)
       described_class::build_command(command)

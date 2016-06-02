@@ -1,13 +1,13 @@
 require 'redis/connection/registry'
 require 'redis/errors'
-require 'resp'
+require 'oxblood'
 
 class Redis
   module Connection
-    class Resp
+    class Oxblood
       def self.connect(config)
         conn_type = config[:scheme] == 'unix' ? :unix : :tcp
-        connection = ::RESP::Connection.public_send(:"connect_#{conn_type}", config)
+        connection = ::Oxblood::Connection.public_send(:"connect_#{conn_type}", config)
 
         new(connection)
       end
@@ -35,9 +35,9 @@ class Redis
       def read
         reply = @connection.read_response
         reply = encode(reply) if reply.is_a?(String)
-        reply = CommandError.new(reply.message) if reply.is_a?(RESP::Protocol::RError)
+        reply = CommandError.new(reply.message) if reply.is_a?(Oxblood::Protocol::RError)
         reply
-      rescue RESP::Protocol::ParserError => e
+      rescue Oxblood::Protocol::ParserError => e
         raise Redis::ProtocolError.new(e.message)
       end
 
@@ -54,4 +54,4 @@ class Redis
   end
 end
 
-Redis::Connection.drivers << Redis::Connection::Resp
+Redis::Connection.drivers << Redis::Connection::Oxblood

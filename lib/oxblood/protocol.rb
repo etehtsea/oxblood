@@ -1,4 +1,4 @@
-module RESP
+module Oxblood
   module Protocol
     SerializerError = Class.new(RuntimeError)
     ParserError = Class.new(RuntimeError)

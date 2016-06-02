@@ -1,4 +1,4 @@
-module RESP
+module Oxblood
   module Command
     class << self
       def hdel(key, fields)
@@ -83,7 +83,7 @@ module RESP
       private
 
       def serialize(command)
-        RESP::Protocol.build_command(command)
+        Protocol.build_command(command)
       end
     end
   end

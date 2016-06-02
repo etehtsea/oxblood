@@ -1,6 +1,6 @@
-require 'resp/command'
+require 'oxblood/command'
 
-module RESP
+module Oxblood
   class Pipeline < Session
     def initialize(connection)
       super

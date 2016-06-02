@@ -1,39 +1,36 @@
-# RESP
+# Oxblood
 
-Experimental Redis ruby driver.
+An experimental Redis Ruby client.
 
 ## Usage
 
 ### Standalone
 
 ```ruby
-require 'resp'
-c = RESP::Connection.connect_tcp('localhost', 6379, 0.3, 0.3)
-c.send_command(['SET', 'mykey', 'value']) # => 35
-c.read_response # => "OK"
-c.send_command(['GET', 'mykey']) # => 24
-c.read_response # => "value"
+require 'oxblood/pool'
+pool = Oxblood::Pool.new
+pool.ping # => 'PONG'
 ```
 
 ### As [redis-rb](https://github.com/redis/redis-rb) driver
 
 ```ruby
-[1] pry(main)> require 'redis/connection/resp'
+[1] pry(main)> require 'redis/connection/oxblood'
 => true
 [2] pry(main)> require 'redis'
 => true
 # For implicit usage connection should be required before redis gem
 [3] pry(main)> Redis.new.client.options[:driver]
-=> Redis::Connection::Resp
+=> Redis::Connection::Oxblood
 # Explicitly
-[4] pry(main)> Redis.new(driver: :resp).client.options[:driver]
-=> Redis::Connection::Resp
+[4] pry(main)> Redis.new(driver: :oxblood).client.options[:driver]
+=> Redis::Connection::Oxblood
 ```
 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on [GitHub](https://github.com/etehtsea/resp-rb).
+Bug reports and pull requests are welcome on [GitHub](https://github.com/etehtsea/oxblood).
 
 
 ## License

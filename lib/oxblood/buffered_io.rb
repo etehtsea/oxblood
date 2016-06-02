@@ -1,4 +1,4 @@
-module RESP
+module Oxblood
   # @private
   class BufferedIO
     def initialize(socket)

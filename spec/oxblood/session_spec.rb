@@ -1,8 +1,8 @@
-require 'resp/session'
+require 'oxblood/session'
 
-RSpec.describe RESP::Session do
+RSpec.describe Oxblood::Session do
   let(:connection) do
-    RESP::Connection.open
+    Oxblood::Connection.open
   end
 
   subject do

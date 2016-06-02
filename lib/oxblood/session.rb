@@ -1,7 +1,7 @@
-require 'resp/connection'
-require 'resp/command'
+require 'oxblood/connection'
+require 'oxblood/command'
 
-module RESP
+module Oxblood
   class Session
     def initialize(connection)
       @connection = connection

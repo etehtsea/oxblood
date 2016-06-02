@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
 
-gem 'resp', path: '..'
+gem 'oxblood', path: '..'
 gem 'benchmark-ips'
 gem 'redis'
