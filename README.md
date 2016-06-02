@@ -7,9 +7,9 @@ An experimental Redis Ruby client.
 ### Standalone
 
 ```ruby
-require 'oxblood/pool'
-pool = Oxblood::Pool.new
-pool.ping # => 'PONG'
+require 'oxblood'
+pool = Oxblood::Pool.new(size: 8)
+pool.with { |c| c.ping }
 ```
 
 ### As [redis-rb](https://github.com/redis/redis-rb) driver
