@@ -69,7 +69,7 @@ module Oxblood
     # @param [Array] command Array of command name with it's args
     # @return [Integer] Number of bytes written to socket
     def send_command(command)
-      write(Oxblood::Protocol.build_command(command))
+      write(Protocol.build_command(command))
     end
 
     # FIXME: docs
@@ -126,7 +126,7 @@ module Oxblood
     #       sending command.
     # @todo Raise specific error if server has nothing to answer.
     def read_response
-      Oxblood::Protocol.parse(self)
+      Protocol.parse(self)
     end
 
     # FIXME: docs

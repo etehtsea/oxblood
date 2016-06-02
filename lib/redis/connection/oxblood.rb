@@ -35,9 +35,9 @@ class Redis
       def read
         reply = @connection.read_response
         reply = encode(reply) if reply.is_a?(String)
-        reply = CommandError.new(reply.message) if reply.is_a?(Oxblood::Protocol::RError)
+        reply = CommandError.new(reply.message) if reply.is_a?(::Oxblood::Protocol::RError)
         reply
-      rescue Oxblood::Protocol::ParserError => e
+      rescue ::Oxblood::Protocol::ParserError => e
         raise Redis::ProtocolError.new(e.message)
       end
 
