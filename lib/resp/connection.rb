@@ -69,7 +69,21 @@ module RESP
     # @param [Array] command Array of command name with it's args
     # @return [Integer] Number of bytes written to socket
     def send_command(command)
-      @socket.write(RESP::Protocol.build_command(command))
+      write(RESP::Protocol.build_command(command))
+    end
+
+    # FIXME: docs
+    def write(command)
+      @socket.write(command)
+    end
+
+    # Send command to Redis server and read response from it
+    # @example run_command(['PING']) => PONG
+    # @param [Array] command Array of command name with it's args
+    # @return #FIXME
+    def run_command(command)
+      send_command(command)
+      read_response
     end
 
     # True if connection is established

@@ -1,4 +1,5 @@
 require 'connection_pool'
+require 'resp/session'
 
 module RESP
   class Pool
@@ -20,7 +21,7 @@ module RESP
 
     def with
       conn = @pool.checkout
-      yield conn
+      yield Session.new(conn)
     ensure
       @pool.checkin if conn
     end
