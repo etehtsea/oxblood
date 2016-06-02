@@ -128,5 +128,10 @@ module RESP
     def read_response
       RESP::Protocol.parse(self)
     end
+
+    # FIXME: docs
+    def read_responses(n)
+      Array.new(n) { read_response }
+    end
   end
 end

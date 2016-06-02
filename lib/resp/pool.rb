@@ -1,5 +1,6 @@
 require 'connection_pool'
 require 'resp/session'
+require 'resp/pipeline'
 
 module RESP
   class Pool
@@ -22,6 +23,15 @@ module RESP
     def with
       conn = @pool.checkout
       yield Session.new(conn)
+    ensure
+      @pool.checkin if conn
+    end
+
+    def pipelined
+      conn = @pool.checkout
+      pipeline = Pipeline.new(conn)
+      yield pipeline
+      pipeline.sync
     ensure
       @pool.checkin if conn
     end
