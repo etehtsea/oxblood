@@ -27,6 +27,9 @@ pool.with { |c| c.ping }
 => Redis::Connection::Oxblood
 ```
 
+## Continuous Integration
+
+[![Build Status](https://travis-ci.org/etehtsea/oxblood.svg?branch=master)](https://travis-ci.org/etehtsea/oxblood)
 
 ## Contributing
 
