@@ -1,3 +1,5 @@
+sudo: false
+
 language: ruby
 
 rvm:
@@ -6,7 +8,10 @@ rvm:
   - jruby-9.0.5.0
   - jruby-9.1.2.0
 
-sudo: false
-
 services:
   - redis-server
+
+addons:
+  code_climate:
+    repo_token:
+      secure: ja+veIG40Hh2QJ75AQtT5Ip2a+SuiBTAQBRFtFEFiqGsXbkKjRw46qDumCIENCphkSjqnXcBYDhGUGjlXA3f4y6VSjr5+nw9PxvksvMnzEzT02UYs4OtqcBXuIH/F7UMylFFGmQmfnfxMOBGYn7ic5za9xGbzvgjwOnIl3x9kb2HW1cyKpH3tW/NgcRKJZjvJoQMOcMtaojtOdRc7wLypQdfDYW2NnvF338CVjSg7nAixNzRsCXgVa+ToeSLZWeg2pkT6Bt+sPwuFqPBybZEpWWe7NMUDtJuv610WPhBmWWnuQ/ncrTwOjs0DrUbQCofZb0EdSKy+JcqVTA57MP9X5s1okccdlXzFhnshFElKjCRE3As2IiAq0OINhRCJYYbUBac9MOJL+iZYEyhH6TydiwXJTvdHeKR39Fc2Em3ZiWCvsNqbvpP3/bEXDkZVeX6WfpKdlgeXo8VgtPj7ORyZpAQ234Ja685HpLpoSfRRFuHqZAhmUh42Hmy/IFgVtaj4Esvz3cwEhcZk4fzacAY+6uAKnJZQsi/DOwfJ68VSNTsoAgDBJiKpdBHB7k/XNG9yWQv1vcsWK3/UC8Os9lgTXcQg49CBaVb3+y9RReWjQzqQW9ACJfxuDXYhZKGgWEdl5FfuSLO65k2Iq1Qracf6vwutFN5a2McR0wtxqhAdYU=
