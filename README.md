@@ -1,5 +1,7 @@
 # Oxblood
 
+[![Gem Version](https://badge.fury.io/rb/oxblood.svg)](https://badge.fury.io/rb/oxblood)
+
 An experimental Redis Ruby client.
 
 ## Usage
