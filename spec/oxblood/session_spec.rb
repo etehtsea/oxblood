@@ -132,7 +132,7 @@ RSpec.describe Oxblood::Session do
       expect(subject.sadd(:myset, 'World')).to eq(0)
 
       cmd = [:SMEMBERS, :myset]
-      expect(connection.run_command(cmd)).to eq(['Hello', 'World'])
+      expect(connection.run_command(cmd)).to match_array(['Hello', 'World'])
     end
   end
 
