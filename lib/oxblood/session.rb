@@ -7,7 +7,9 @@ module Oxblood
       @connection = connection
     end
 
-    # ------------------ Hashes ---------------------
+    #
+    # Hashes
+    #
 
     # Removes the specified fields from the hash stored at key
     # @see http://redis.io/commands/hdel
@@ -31,17 +33,6 @@ module Oxblood
       1 == run(cmd.hexists(key, field))
     end
 
-    # Set multiple hash fields to multiple values
-    # @see http://redis.io/commands/hmset
-    #
-    # @param [String] key under which store hash
-    # @param [[String, String], Array<[String, String]>] args fields and values
-    #
-    # @return [String] 'OK'
-    def hmset(key, *args)
-      run(cmd.hmset(key, *args))
-    end
-
     # Get the value of a hash field
     # @see http://redis.io/commands/hget
     #
@@ -52,6 +43,62 @@ module Oxblood
     #   or nil when field is not present in the hash or key does not exist.
     def hget(key, field)
       run(cmd.hget(key, field))
+    end
+
+    # Get all the fields and values in a hash
+    # @see http://redis.io/commands/hgetall
+    #
+    # @param [String] key under which hash is stored
+    #
+    # @return [Hash] of fields and their values
+    def hgetall(key)
+      Hash[*run(cmd.hgetall(key))]
+    end
+
+    # Increment the integer value of a hash field by the given number
+    # @see http://redis.io/commands/hincrby
+    #
+    # @param [String] key under which hash is stored
+    # @param [String] field to increment
+    # @param [Integer] increment by value
+    #
+    # @return [Integer] the value at field after the increment operation
+    def hincrby(key, field, increment)
+      run(cmd.hincrby(key, field, increment))
+    end
+
+    # Increment the float value of a hash field by the given number
+    # @see http://redis.io/commands/hincrby
+    #
+    # @param [String] key under which hash is stored
+    # @param [String] field to increment
+    # @param [Integer] increment by value
+    #
+    # @return [String] the value of field after the increment
+    def hincrbyfloat(key, field, increment)
+      run(cmd.hincrbyfloat(key, field, increment))
+    end
+
+    # Get all the keys in a hash
+    # @see http://redis.io/commands/hkeys
+    #
+    # @param [String] key
+    #
+    # @return [Array] list of fields in the hash, or an empty list when
+    #   key does not exist.
+    def hkeys(key)
+      run(cmd.hkeys(key))
+    end
+
+    # Get the number of keys in a hash
+    # @see http://redis.io/commands/hlen
+    #
+    # @param [String] key
+    #
+    # @return [Integer] number of fields in the hash, or 0 when
+    #   key does not exist.
+    def hlen(key)
+      run(cmd.hlen(key))
     end
 
     # Get the field values of all given hash fields
@@ -66,14 +113,72 @@ module Oxblood
       run(cmd.hmget(key, *fields))
     end
 
-    # Get all the fields and values in a hash
-    # @see http://redis.io/commands/hgetall
+    # Set multiple hash fields to multiple values
+    # @see http://redis.io/commands/hmset
     #
-    # @param [String] key under which hash is stored
+    # @param [String] key under which store hash
+    # @param [[String, String], Array<[String, String]>] args fields and values
     #
-    # @return [Hash] of fields and their values
-    def hgetall(key)
-      Hash[*run(cmd.hgetall(key))]
+    # @return [String] 'OK'
+    def hmset(key, *args)
+      run(cmd.hmset(key, *args))
+    end
+
+
+    # Set the string value of a hash field
+    # @see http://redis.io/commands/hset
+    #
+    # @param [String] key
+    # @param [String] field
+    # @param [String] value
+    #
+    # @return [Integer] 1 if field is a new field in the hash and value was set.
+    #   0 if field already exists in the hash and the value was updated.
+    def hset(key, field, value)
+      run(cmd.hset(key, field, value))
+    end
+
+    # Set the value of a hash field, only if the field does not exist
+    # @see http://redis.io/commands/hsetnx
+    #
+    # @param [String] key
+    # @param [String] field
+    # @param [String] value
+    #
+    # @return [Integer] 1 if field is a new field in the hash and value was set.
+    #   0 if field already exists in the hash and no operation was performed.
+    def hsetnx(key, field, value)
+      run(cmd.hsetnx(key, field, value))
+    end
+
+    # Get the length of the value of a hash field
+    # @see http://redis.io/commands/hstrlen
+    #
+    # @param [String] key
+    # @param [String] field
+    #
+    # @return [Integer] the string length of the value associated with field,
+    #   or 0 when field is not present in the hash or key does not exist at all.
+    def hstrlen(key, field)
+      run(cmd.hstrlen(key, field))
+    end
+
+    # Get all values in a hash
+    # @see http://redis.io/commands/hvals
+    #
+    # @param [String] key
+    #
+    # @return [Array] list of values in the hash, or an empty list when
+    #   key does not exist
+    def hvals(key)
+      run(cmd.hvals(key))
+    end
+
+    # Incrementally iterate hash fields and associated values
+    # @see http://redis.io/commands/hscan
+    #
+    # @todo Implement this command
+    def hscan(key, cursor)
     end
 
     # ------------------ Strings ---------------------

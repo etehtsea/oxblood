@@ -1,6 +1,10 @@
 module Oxblood
   module Command
     class << self
+      #
+      # Hashes
+      #
+
       def hdel(key, fields)
         serialize([:HDEL, key, fields])
       end
@@ -9,20 +13,56 @@ module Oxblood
         serialize([:HEXISTS, key, field])
       end
 
-      def hmset(key, *args)
-        serialize(args.unshift(:HMSET, key))
-      end
-
       def hget(key, field)
         serialize([:HGET, key, field])
+      end
+
+      def hgetall(key)
+        serialize([:HGETALL, key])
+      end
+
+      def hincrby(key, field, increment)
+        serialize([:HINCRBY, key, field, increment])
+      end
+
+      def hincrbyfloat(key, field, increment)
+        serialize([:HINCRBYFLOAT, key, field, increment])
+      end
+
+      def hkeys(key)
+        serialize([:HKEYS, key])
+      end
+
+      def hlen(key)
+        serialize([:HLEN, key])
       end
 
       def hmget(key, *fields)
         serialize(fields.unshift(:HMGET, key))
       end
 
-      def hgetall(key)
-        serialize([:HGETALL, key])
+      def hmset(key, *args)
+        serialize(args.unshift(:HMSET, key))
+      end
+
+      def hset(key, field, value)
+        serialize([:HSET, key, field, value])
+      end
+
+      def hsetnx(key, field, value)
+        serialize([:HSETNX, key, field, value])
+      end
+
+      def hstrlen(key, field)
+        serialize([:HSTRLEN, key, field])
+      end
+
+      def hvals(key)
+        serialize([:HVALS, key])
+      end
+
+      def hscan(key, cursor)
+        raise 'Not implemented!'
       end
 
       # ------------------ Strings ---------------------
