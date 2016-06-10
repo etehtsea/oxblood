@@ -203,7 +203,9 @@ RSpec.describe Oxblood::Session do
     end
   end
 
-  describe '#hstrlen' do
+  # FIXME: enable this when specs will run under different redis versions
+  # This command was introduced in later versions than default redis in Travis
+  skip '#hstrlen' do
     specify do
       command = [:HMSET, 'myhash', 'f1', 'HelloWorld', 'f2', '99', 'f3', '-256']
       connection.run_command(command)
