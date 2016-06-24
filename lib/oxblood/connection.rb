@@ -1,5 +1,6 @@
 require 'oxblood/protocol'
 require 'oxblood/buffered_io'
+require 'oxblood/session'
 
 module Oxblood
   # Class responsible for connection maintenance
@@ -9,9 +10,10 @@ module Oxblood
     class << self
       # Open connection to Redis server
       #
-      # @param [Hash] options Connection options
+      # @param [Hash] opts Connection options
       #
-      # @option options [Float] :timeout (1.0) socket read timeout
+      # @option opts [Float] :timeout (1.0) socket read timeout
+      # @option opts [Integer] :db database number
       #
       # @option opts [String] :host ('localhost') Hostname or IP address to connect to
       # @option opts [Integer] :port (6379) Port Redis server listens on
@@ -33,7 +35,9 @@ module Oxblood
 
         timeout = opts.fetch(:timeout, 1.0)
 
-        new(socket, timeout)
+        new(socket, timeout).tap do |conn|
+          Session.new(conn).select(opts[:db]) if opts[:db]
+        end
       end
 
       private

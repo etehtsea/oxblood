@@ -257,6 +257,18 @@ RSpec.describe Oxblood::Session do
     end
   end
 
+  describe '#select' do
+    specify do
+      expect(subject.select(0)).to eq('OK')
+    end
+
+    specify do
+      response = subject.select('NONSENSE')
+      expect(response).to be_a(Oxblood::Protocol::RError)
+      expect(response.message).to eq('ERR invalid DB index')
+    end
+  end
+
   describe '#del' do
     specify do
       connection.run_command([:SET, 'key1', 'Hello'])

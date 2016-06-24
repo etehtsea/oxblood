@@ -1,4 +1,3 @@
-require 'oxblood/connection'
 require 'oxblood/command'
 
 module Oxblood
@@ -194,6 +193,16 @@ module Oxblood
     # @return [String] message passed as argument
     def ping(message = nil)
       run(cmd.ping(message))
+    end
+
+    # Change the selected database for the current connection
+    # @see http://redis.io/commands/select
+    #
+    # @param [Integer] index database to switch
+    #
+    # @return [String] 'OK'
+    def select(index)
+      run(cmd.select(index))
     end
 
     # ------------------ Server ---------------------

@@ -76,6 +76,10 @@ module Oxblood
         serialize(command)
       end
 
+      def select(index)
+        serialize([:SELECT, index])
+      end
+
       # ------------------ Server ---------------------
 
       def info(section = nil)
