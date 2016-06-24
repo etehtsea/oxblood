@@ -22,7 +22,7 @@ module Oxblood
       # @param [Hash] options Connection options
       #
       # @option options [String] :host ('localhost') Hostname or IP address to connect to
-      # @option options [Integer] :port (5672) Port Redis server listens on
+      # @option options [Integer] :port (6379) Port Redis server listens on
       # @option options [Float] :timeout (1.0) socket read timeout
       # @option options [Float] :connect_timeout (1.0) socket connect timeout
       #
