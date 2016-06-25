@@ -7,54 +7,45 @@ module Oxblood
     TimeoutError = Class.new(RuntimeError)
 
     class << self
-      # Open Redis connection
+      # Open connection to Redis server
       #
       # @param [Hash] options Connection options
       #
-      # @option (see .connect_tcp)
-      # @option (see .connect_unix)
-      def open(options = {})
-        options.key?(:path) ? connect_unix(options) : connect_tcp(options)
-      end
-
-      # Connect to Redis server through TCP
-      #
-      # @param [Hash] options Connection options
-      #
-      # @option options [String] :host ('localhost') Hostname or IP address to connect to
-      # @option options [Integer] :port (6379) Port Redis server listens on
       # @option options [Float] :timeout (1.0) socket read timeout
-      # @option options [Float] :connect_timeout (1.0) socket connect timeout
+      #
+      # @option opts [String] :host ('localhost') Hostname or IP address to connect to
+      # @option opts [Integer] :port (6379) Port Redis server listens on
+      # @option opts [Float] :connect_timeout (1.0) socket connect timeout
+      #
+      # @option opts [String] :path UNIX socket path
       #
       # @return [Oxblood::Connection] connection instance
-      def connect_tcp(options = {})
-        host = options.fetch(:host, 'localhost')
-        port = options.fetch(:port, 6379)
-        timeout = options.fetch(:timeout, 1.0)
-        connect_timeout = options.fetch(:connect_timeout, 1.0)
+      def open(opts = {})
+        socket = if opts.key?(:path)
+          unix_socket(opts.fetch(:path))
+        else
+          host = opts.fetch(:host, 'localhost')
+          port = opts.fetch(:port, 6379)
+          connect_timeout = opts.fetch(:connect_timeout, 1.0)
 
-        socket = Socket.tcp(host, port, connect_timeout: connect_timeout)
-        socket.setsockopt(Socket::IPPROTO_TCP, Socket::TCP_NODELAY, 1)
+          tcp_socket(host, port, connect_timeout)
+        end
+
+        timeout = opts.fetch(:timeout, 1.0)
 
         new(socket, timeout)
       end
 
-      # Connect to Redis server through UNIX socket
-      #
-      # @param [Hash] options Connection options
-      #
-      # @option options [String] :path UNIX socket path
-      # @option options [Float] :timeout (1.0) socket read timeout
-      #
-      # @raise [KeyError] if :path was not passed
-      #
-      # @return [Oxblood::Connection] connection instance
-      def connect_unix(options = {})
-        path = options.fetch(:path)
-        timeout = options.fetch(:timeout, 1.0)
+      private
 
-        socket = ::Socket.unix(path)
-        new(socket, timeout)
+      def unix_socket(path)
+        Socket.unix(path)
+      end
+
+      def tcp_socket(host, port, connect_timeout)
+        Socket.tcp(host, port, connect_timeout: connect_timeout).tap do |sock|
+          sock.setsockopt(Socket::IPPROTO_TCP, Socket::TCP_NODELAY, 1)
+        end
       end
     end
 
