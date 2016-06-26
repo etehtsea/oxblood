@@ -67,15 +67,16 @@ module Oxblood
       write(Protocol.build_command(command))
     end
 
-    # FIXME: docs
-    def write(command)
-      @socket.write(command)
+    # Write data to socket
+    # @param [#to_s] data given
+    # @return [Integer] the number of bytes written
+    def write(data)
+      @socket.write(data)
     end
 
     # Send command to Redis server and read response from it
     # @example run_command(['PING']) => PONG
     # @param [Array] command Array of command name with it's args
-    # @return #FIXME
     def run_command(command)
       send_command(command)
       read_response
@@ -124,7 +125,8 @@ module Oxblood
       Protocol.parse(self)
     end
 
-    # FIXME: docs
+    # Read several responses from server
+    # (see #read_response)
     def read_responses(n)
       Array.new(n) { read_response }
     end

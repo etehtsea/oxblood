@@ -61,7 +61,7 @@ module Oxblood
         serialize([:HVALS, key])
       end
 
-      def hscan(key, cursor)
+      def hscan(_key, _cursor)
         raise 'Not implemented!'
       end
 
