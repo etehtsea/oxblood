@@ -9,6 +9,8 @@ engines:
     enabled: true
   rubocop:
     enabled: true
+    exclude_fingerprints:
+      - 5b0714ee48391458a7484df9bc2ac262
 ratings:
   paths:
   - "**.rb"
