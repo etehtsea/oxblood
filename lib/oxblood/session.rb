@@ -213,10 +213,7 @@ module Oxblood
     #
     # @param [String] section used to select a specific section of information
     def info(section = nil)
-      command = [:INFO]
-      command << section if section
-
-      response = run(cmd.info(section))
+      run(cmd.info(section))
       # FIXME: Parse response
     end
 
