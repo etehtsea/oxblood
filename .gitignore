@@ -7,5 +7,6 @@
 /pkg/
 /spec/reports/
 /spec/examples.txt
-/tmp/
+/tmp/*
+!/tmp/.keep
 /benchmarks/Gemfile.lock
