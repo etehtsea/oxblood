@@ -1,5 +1,3 @@
-require 'oxblood/command'
-
 module Oxblood
   class Session
     def initialize(connection)
@@ -18,7 +16,7 @@ module Oxblood
     #
     # @return [Integer] the number of fields that were removed from the hash
     def hdel(key, fields)
-      run(cmd.hdel(key, fields))
+      run(:HDEL, key, fields)
     end
 
     # Returns if field is an existing field in the hash stored at key
@@ -29,7 +27,7 @@ module Oxblood
     #
     # @return [Boolean] do hash contains field or not
     def hexists(key, field)
-      1 == run(cmd.hexists(key, field))
+      1 == run(:HEXISTS, key, field)
     end
 
     # Get the value of a hash field
@@ -41,7 +39,7 @@ module Oxblood
     # @return [String, nil] the value associated with field
     #   or nil when field is not present in the hash or key does not exist.
     def hget(key, field)
-      run(cmd.hget(key, field))
+      run(:HGET, key, field)
     end
 
     # Get all the fields and values in a hash
@@ -51,7 +49,7 @@ module Oxblood
     #
     # @return [Hash] of fields and their values
     def hgetall(key)
-      Hash[*run(cmd.hgetall(key))]
+      Hash[*run(:HGETALL, key)]
     end
 
     # Increment the integer value of a hash field by the given number
@@ -63,7 +61,7 @@ module Oxblood
     #
     # @return [Integer] the value at field after the increment operation
     def hincrby(key, field, increment)
-      run(cmd.hincrby(key, field, increment))
+      run(:HINCRBY, key, field, increment)
     end
 
     # Increment the float value of a hash field by the given number
@@ -75,7 +73,7 @@ module Oxblood
     #
     # @return [String] the value of field after the increment
     def hincrbyfloat(key, field, increment)
-      run(cmd.hincrbyfloat(key, field, increment))
+      run(:HINCRBYFLOAT, key, field, increment)
     end
 
     # Get all the keys in a hash
@@ -86,7 +84,7 @@ module Oxblood
     # @return [Array] list of fields in the hash, or an empty list when
     #   key does not exist.
     def hkeys(key)
-      run(cmd.hkeys(key))
+      run(:HKEYS, key)
     end
 
     # Get the number of keys in a hash
@@ -97,7 +95,7 @@ module Oxblood
     # @return [Integer] number of fields in the hash, or 0 when
     #   key does not exist.
     def hlen(key)
-      run(cmd.hlen(key))
+      run(:HLEN, key)
     end
 
     # Get the field values of all given hash fields
@@ -109,7 +107,7 @@ module Oxblood
     # @return [Array] list of values associated with the given fields,
     #   in the same order as they are requested.
     def hmget(key, *fields)
-      run(cmd.hmget(key, *fields))
+      run(*fields.unshift(:HMGET, key))
     end
 
     # Set multiple hash fields to multiple values
@@ -120,7 +118,7 @@ module Oxblood
     #
     # @return [String] 'OK'
     def hmset(key, *args)
-      run(cmd.hmset(key, *args))
+      run(*args.unshift(:HMSET, key))
     end
 
 
@@ -134,7 +132,7 @@ module Oxblood
     # @return [Integer] 1 if field is a new field in the hash and value was set.
     #   0 if field already exists in the hash and the value was updated.
     def hset(key, field, value)
-      run(cmd.hset(key, field, value))
+      run(:HSET, key, field, value)
     end
 
     # Set the value of a hash field, only if the field does not exist
@@ -147,7 +145,7 @@ module Oxblood
     # @return [Integer] 1 if field is a new field in the hash and value was set.
     #   0 if field already exists in the hash and no operation was performed.
     def hsetnx(key, field, value)
-      run(cmd.hsetnx(key, field, value))
+      run(:HSETNX, key, field, value)
     end
 
     # Get the length of the value of a hash field
@@ -159,7 +157,7 @@ module Oxblood
     # @return [Integer] the string length of the value associated with field,
     #   or 0 when field is not present in the hash or key does not exist at all.
     def hstrlen(key, field)
-      run(cmd.hstrlen(key, field))
+      run(:HSTRLEN, key, field)
     end
 
     # Get all values in a hash
@@ -170,7 +168,7 @@ module Oxblood
     # @return [Array] list of values in the hash, or an empty list when
     #   key does not exist
     def hvals(key)
-      run(cmd.hvals(key))
+      run(:HVALS, key)
     end
 
     # Incrementally iterate hash fields and associated values
@@ -191,7 +189,7 @@ module Oxblood
     #
     # @return [String] 'OK'
     def auth(password)
-      run(cmd.auth(password))
+      run(:AUTH, password)
     end
 
     # Like {#auth}, except that if error returned, raises it.
@@ -214,7 +212,7 @@ module Oxblood
     #
     # @return [String] message passed as argument
     def ping(message = nil)
-      run(cmd.ping(message))
+      message ? run(:PING, message) : run(:PING)
     end
 
     # Change the selected database for the current connection
@@ -224,7 +222,7 @@ module Oxblood
     #
     # @return [String] 'OK'
     def select(index)
-      run(cmd.select(index))
+      run(:SELECT, index)
     end
 
     # ------------------ Server ---------------------
@@ -235,7 +233,7 @@ module Oxblood
     #
     # @param [String] section used to select a specific section of information
     def info(section = nil)
-      run(cmd.info(section))
+      section ? run(:INFO, section) : run(:INFO)
       # FIXME: Parse response
     end
 
@@ -248,7 +246,7 @@ module Oxblood
     #
     # @return [Integer] the number of keys that were removed
     def del(*keys)
-      run(cmd.del(*keys))
+      run(*keys.unshift(:DEL))
     end
 
     # Find all keys matching the given pattern
@@ -256,7 +254,7 @@ module Oxblood
     #
     # @param [String] pattern used to match keys
     def keys(pattern)
-      run(cmd.keys(pattern))
+      run(:KEYS, pattern)
     end
 
     # Set a key's time to live in seconds
@@ -268,7 +266,7 @@ module Oxblood
     # @return [Integer] 1 if the timeout was set. 0 if key does not exist or
     #   the timeout could not be set.
     def expire(key, seconds)
-      run(cmd.expire(key, seconds))
+      run(:EXPIRE, key, seconds)
     end
 
     # ------------------ Sets ------------------------
@@ -282,7 +280,7 @@ module Oxblood
     # @return [Integer] the number of elements that were added to the set,
     #   not including all the elements already present into the set.
     def sadd(key, *members)
-      run(cmd.sadd(key, *members))
+      run(*members.unshift(:SADD, key))
     end
 
     # Add multiple sets
@@ -292,7 +290,7 @@ module Oxblood
     #
     # @return [Array] list with members of the resulting set
     def sunion(*keys)
-      run(cmd.sunion(*keys))
+      run(*keys.unshift(:SUNION))
     end
 
     # ------------------ Sorted Sets -----------------
@@ -307,7 +305,7 @@ module Oxblood
     # @param [String] key under which store set
     # @param [[Float, String], Array<[Float, String]>] args scores and members
     def zadd(key, *args)
-      run(cmd.zadd(key, *args))
+      run(*args.unshift(:ZADD, key))
     end
 
     # Return a range of members in a sorted set, by score
@@ -319,17 +317,17 @@ module Oxblood
     # @param [String] min value
     # @param [String] max value
     def zrangebyscore(key, min, max)
-      run(cmd.zrangebyscore(key, min, max))
+      run(:ZRANGEBYSCORE, key, min, max)
     end
 
     protected
 
-    def cmd
-      Command
+    def serialize(command)
+      Protocol.build_command(command)
     end
 
-    def run(command)
-      @connection.write(command)
+    def run(*command)
+      @connection.write(serialize(command))
       @connection.read_response
     end
 

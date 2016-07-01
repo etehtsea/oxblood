@@ -1,5 +1,3 @@
-require 'oxblood/command'
-
 module Oxblood
   class Pipeline < Session
     def initialize(connection)
@@ -12,7 +10,8 @@ module Oxblood
     end
 
     def sync
-      @connection.write(@commands.join)
+      serialized_commands = @commands.map { |c| serialize(command) }
+      @connection.write(serialized_commands.join)
       @connection.read_responses(@commands.size)
     end
   end
