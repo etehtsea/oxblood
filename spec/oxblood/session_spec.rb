@@ -247,6 +247,88 @@ RSpec.describe Oxblood::Session do
     end
   end
 
+  describe '#auth' do
+    context 'with password' do
+      before(:context) do
+        @redis_server = RedisServer.new(requirepass: 'hello')
+        @redis_server.start
+      end
+
+      after(:context) do
+        @redis_server.stop
+      end
+
+      let(:connection) do
+        Oxblood::Connection.open(path: @redis_server.opts[:unixsocket])
+      end
+
+      subject do
+        described_class.new(connection)
+      end
+
+      specify do
+        expect(subject.auth('hello')).to eq('OK')
+      end
+
+      specify do
+        response = subject.auth('wrong')
+        expect(response).to be_a(Oxblood::Protocol::RError)
+        expect(response.message).to eq('ERR invalid password')
+      end
+    end
+
+    context 'passwordless' do
+      specify do
+        response = subject.auth('hello')
+        expect(response).to be_a(Oxblood::Protocol::RError)
+        expect(response.message).to eq('ERR Client sent AUTH, but no password is set')
+      end
+    end
+  end
+
+  describe '#auth!' do
+    context 'with password' do
+      before(:context) do
+        @redis_server = RedisServer.new(requirepass: 'hello')
+        @redis_server.start
+      end
+
+      after(:context) do
+        @redis_server.stop
+      end
+
+      let(:connection) do
+        Oxblood::Connection.open(path: @redis_server.opts[:unixsocket])
+      end
+
+      subject do
+        described_class.new(connection)
+      end
+
+      specify do
+        expect(subject.auth!('hello')).to eq('OK')
+      end
+
+      specify do
+        error_message = 'ERR invalid password'
+
+        expect do
+          subject.auth!('wrong')
+        end.to raise_error(Oxblood::Protocol::RError, error_message)
+      end
+    end
+
+    context 'passwordless' do
+      specify do
+        error_message = 'ERR Client sent AUTH, but no password is set'
+
+        expect do
+          subject.auth!('hello')
+        end.to raise_error(Oxblood::Protocol::RError, error_message)
+      end
+    end
+  end
+
   describe '#ping' do
     specify do
       expect(subject.ping).to eq('PONG')

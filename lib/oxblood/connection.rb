@@ -14,6 +14,7 @@ module Oxblood
       #
       # @option opts [Float] :timeout (1.0) socket read timeout
       # @option opts [Integer] :db database number
+      # @option opts [String] :password
       #
       # @option opts [String] :host ('localhost') Hostname or IP address to connect to
       # @option opts [Integer] :port (6379) Port Redis server listens on
@@ -36,7 +37,9 @@ module Oxblood
         timeout = opts.fetch(:timeout, 1.0)
 
         new(socket, timeout).tap do |conn|
-          Session.new(conn).select(opts[:db]) if opts[:db]
+          session = Session.new(conn)
+          session.auth!(opts[:password]) if opts[:password]
+          session.select(opts[:db]) if opts[:db]
         end
       end
 

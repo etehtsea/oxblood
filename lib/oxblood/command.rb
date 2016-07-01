@@ -69,6 +69,10 @@ module Oxblood
 
       # ------------------ Connection ---------------------
 
+      def auth(password)
+        serialize([:AUTH, password])
+      end
+
       def ping(message = nil)
         command = [:PING]
         command << message if message
