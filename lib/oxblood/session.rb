@@ -192,6 +192,16 @@ module Oxblood
       run(:AUTH, password)
     end
 
+    # Echo the given string
+    # @see http://redis.io/commands/echo
+    #
+    # @param [String] message
+    #
+    # @return [String] given string
+    def echo(message)
+      run(:ECHO, message)
+    end
+
     # Like {#auth}, except that if error returned, raises it.
     #
     # @param [String] password

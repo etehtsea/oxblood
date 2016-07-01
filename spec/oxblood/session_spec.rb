@@ -329,6 +329,12 @@ RSpec.describe Oxblood::Session do
     end
   end
 
+  describe '#echo' do
+    specify do
+      expect(subject.echo('Hello')).to eq('Hello')
+    end
+  end
+
   describe '#ping' do
     specify do
       expect(subject.ping).to eq('PONG')
