@@ -46,7 +46,7 @@ module Oxblood
       private
 
       def unix_socket(path)
-        Socket.unix(path)
+        UNIXSocket.new(path)
       end
 
       def tcp_socket(host, port, connect_timeout)
