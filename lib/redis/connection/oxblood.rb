@@ -29,7 +29,7 @@ class Redis
       end
 
       def write(command)
-        @connection.send_command(command)
+        @connection.send_command(*command)
       end
 
       def read

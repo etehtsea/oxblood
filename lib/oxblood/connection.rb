@@ -63,11 +63,11 @@ module Oxblood
     end
 
     # Send comand to Redis server
-    # @example send_command(['CONFIG', 'GET', '*']) => 32
+    # @example send_command('CONFIG', 'GET', '*') => 32
     # @param [Array] command Array of command name with it's args
     # @return [Integer] Number of bytes written to socket
-    def send_command(command)
-      write(Protocol.build_command(command))
+    def send_command(*command)
+      write(Protocol.build_command(*command))
     end
 
     # Write data to socket
@@ -78,10 +78,10 @@ module Oxblood
     end
 
     # Send command to Redis server and read response from it
-    # @example run_command(['PING']) => PONG
+    # @example run_command('PING') => PONG
     # @param [Array] command Array of command name with it's args
-    def run_command(command)
-      send_command(command)
+    def run_command(*command)
+      send_command(*command)
       read_response
     end
 

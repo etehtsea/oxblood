@@ -11,17 +11,17 @@ RSpec.describe Oxblood::Session do
   end
 
   before do
-    connection.run_command([:FLUSHDB])
+    connection.run_command(:FLUSHDB)
   end
 
   describe '#hdel' do
     it 'existing field' do
-      connection.run_command([:HSET, 'myhash', 'field1', 'foo'])
+      connection.run_command(:HSET, 'myhash', 'field1', 'foo')
       expect(subject.hdel(:myhash, 'field1')).to eq(1)
     end
 
     it 'nonexistent field' do
-      connection.run_command([:HSET, 'myhash', 'field1', 'foo'])
+      connection.run_command(:HSET, 'myhash', 'field1', 'foo')
       expect(subject.hdel(:myhash, 'field2')).to eq(0)
     end
 
@@ -30,19 +30,19 @@ RSpec.describe Oxblood::Session do
     end
 
     it 'multiple field' do
-      connection.run_command([:HMSET, 'myhash', 'f1', 1, 'f2', 2, 'f3', 3])
+      connection.run_command(:HMSET, 'myhash', 'f1', 1, 'f2', 2, 'f3', 3)
       expect(subject.hdel(:myhash, ['f0', 'f1', 'f2'])).to eq(2)
     end
   end
 
   describe '#hexists' do
     it 'existing field' do
-      connection.run_command([:HSET, 'myhash', 'field1', 'foo'])
+      connection.run_command(:HSET, 'myhash', 'field1', 'foo')
       expect(subject.hexists(:myhash, 'field1')).to eq(true)
     end
 
     it 'nonexistent field' do
-      connection.run_command([:HSET, 'myhash', 'field1', 'foo'])
+      connection.run_command(:HSET, 'myhash', 'field1', 'foo')
       expect(subject.hexists(:myhash, 'field2')).to eq(false)
     end
 
@@ -53,7 +53,7 @@ RSpec.describe Oxblood::Session do
 
   describe '#hget' do
     specify do
-      connection.run_command([:HSET, 'myhash', 'f1', 'foo'])
+      connection.run_command(:HSET, 'myhash', 'f1', 'foo')
 
       expect(subject.hget('myhash', 'f1')).to eq('foo')
       expect(subject.hget('myhash', 'f2')).to be_nil
@@ -63,8 +63,8 @@ RSpec.describe Oxblood::Session do
 
   describe '#hgetall' do
     specify do
-      connection.run_command([:HSET, 'myhash', 'f1', 'Hello'])
-      connection.run_command([:HSET, 'myhash', 'f2', 'World'])
+      connection.run_command(:HSET, 'myhash', 'f1', 'Hello')
+      connection.run_command(:HSET, 'myhash', 'f2', 'World')
 
       expect(subject.hgetall('myhash')).to eq({ 'f1' => 'Hello', 'f2' => 'World' })
     end
@@ -72,7 +72,7 @@ RSpec.describe Oxblood::Session do
 
   describe '#hincrby' do
     it 'existing field' do
-      connection.run_command([:HSET, 'myhash', 'field', 5])
+      connection.run_command(:HSET, 'myhash', 'field', 5)
 
       expect(subject.hincrby('myhash', 'field', 1)).to eq(6)
       expect(subject.hincrby('myhash', 'field', -1)).to eq(5)
@@ -84,7 +84,7 @@ RSpec.describe Oxblood::Session do
     end
 
     it 'nonexistent field' do
-      connection.run_command([:HSET, 'myhash', 'otherfield', 5])
+      connection.run_command(:HSET, 'myhash', 'otherfield', 5)
 
       expect(subject.hincrby('myhash', 'field', 5)).to eq(5)
     end
@@ -92,8 +92,8 @@ RSpec.describe Oxblood::Session do
 
   describe '#hincrbyfloat' do
     it 'existing field' do
-      connection.run_command([:HSET, 'myhash', 'field1', 10.50])
-      connection.run_command([:HSET, 'myhash', 'field2', '5.0e3'])
+      connection.run_command(:HSET, 'myhash', 'field1', 10.50)
+      connection.run_command(:HSET, 'myhash', 'field2', '5.0e3')
 
       expect(subject.hincrbyfloat('myhash', 'field1', 0.1)).to eq('10.6')
       expect(subject.hincrbyfloat('myhash', 'field2', '2.0e2')).to eq('5200')
@@ -104,13 +104,13 @@ RSpec.describe Oxblood::Session do
     end
 
     it 'nonexistent field' do
-      connection.run_command([:HSET, 'myhash', 'otherfield', 5])
+      connection.run_command(:HSET, 'myhash', 'otherfield', 5)
 
       expect(subject.hincrbyfloat('myhash', 'field', 5.0)).to eq('5')
     end
 
     it 'field value is not parsable as a double precision' do
-      connection.run_command([:HSET, 'myhash', 'field', 'asd'])
+      connection.run_command(:HSET, 'myhash', 'field', 'asd')
       resp = subject.hincrbyfloat('myhash', 'field', 5.0)
 
       expect(resp).to be_a(Oxblood::Protocol::RError)
@@ -120,8 +120,8 @@ RSpec.describe Oxblood::Session do
 
   describe '#hkeys' do
     specify do
-      connection.run_command([:HSET, 'myhash', 'f1', 'Hello'])
-      connection.run_command([:HSET, 'myhash', 'f2', 'World'])
+      connection.run_command(:HSET, 'myhash', 'f1', 'Hello')
+      connection.run_command(:HSET, 'myhash', 'f2', 'World')
 
       expect(subject.hkeys('myhash')).to contain_exactly('f1', 'f2')
     end
@@ -133,8 +133,8 @@ RSpec.describe Oxblood::Session do
 
   describe '#hlen' do
     specify do
-      connection.run_command([:HSET, 'myhash', 'f1', 'Hello'])
-      connection.run_command([:HSET, 'myhash', 'f2', 'World'])
+      connection.run_command(:HSET, 'myhash', 'f1', 'Hello')
+      connection.run_command(:HSET, 'myhash', 'f2', 'World')
 
       expect(subject.hlen('myhash')).to eq(2)
     end
@@ -146,8 +146,8 @@ RSpec.describe Oxblood::Session do
 
   describe '#hmget' do
     specify do
-      connection.run_command([:HSET, 'myhash', 'f1', 'Hello'])
-      connection.run_command([:HSET, 'myhash', 'f2', 'World'])
+      connection.run_command(:HSET, 'myhash', 'f1', 'Hello')
+      connection.run_command(:HSET, 'myhash', 'f2', 'World')
 
       result = ['Hello', 'World', nil]
       expect(subject.hmget('myhash', 'f1', 'f2', 'nofield')).to eq(result)
@@ -157,50 +157,50 @@ RSpec.describe Oxblood::Session do
   describe '#hmset' do
     specify do
       expect(subject.hmset(:myhash, 'f1', 'Hello', 'f2', 'World')).to eq('OK')
-      expect(connection.run_command([:HGET, 'myhash', 'f1'])).to eq('Hello')
-      expect(connection.run_command([:HGET, 'myhash', 'f2'])).to eq('World')
+      expect(connection.run_command(:HGET, 'myhash', 'f1')).to eq('Hello')
+      expect(connection.run_command(:HGET, 'myhash', 'f2')).to eq('World')
     end
   end
 
   describe '#hset' do
     it 'new field' do
-      connection.run_command([:HSET, 'myhash', 'f1', 'Hello'])
+      connection.run_command(:HSET, 'myhash', 'f1', 'Hello')
 
       expect(subject.hset('myhash', 'f2', 'World')).to eq(1)
-      expect(connection.run_command([:HGET, 'myhash', 'f2'])).to eq('World')
+      expect(connection.run_command(:HGET, 'myhash', 'f2')).to eq('World')
     end
 
     it 'nonexistent key' do
       expect(subject.hset('myhash', 'f1', 'Hello')).to eq(1)
-      expect(connection.run_command([:HGET, 'myhash', 'f1'])).to eq('Hello')
+      expect(connection.run_command(:HGET, 'myhash', 'f1')).to eq('Hello')
     end
 
     it 'updates existing field' do
-      connection.run_command([:HSET, 'myhash', 'f1', 'Hello'])
+      connection.run_command(:HSET, 'myhash', 'f1', 'Hello')
 
       expect(subject.hset('myhash', 'f1', 'World')).to eq(0)
-      expect(connection.run_command([:HGET, 'myhash', 'f1'])).to eq('World')
+      expect(connection.run_command(:HGET, 'myhash', 'f1')).to eq('World')
     end
   end
 
   describe '#hsetnx' do
     it 'nonexistent key' do
       expect(subject.hsetnx('myhash', 'f1', 'Hello')).to eq(1)
-      expect(connection.run_command([:HGET, 'myhash', 'f1'])).to eq('Hello')
+      expect(connection.run_command(:HGET, 'myhash', 'f1')).to eq('Hello')
     end
 
     it 'new field' do
-      connection.run_command([:HSET, 'myhash', 'f1', 'Hello'])
+      connection.run_command(:HSET, 'myhash', 'f1', 'Hello')
 
       expect(subject.hsetnx('myhash', 'f2', 'World')).to eq(1)
-      expect(connection.run_command([:HGET, 'myhash', 'f2'])).to eq('World')
+      expect(connection.run_command(:HGET, 'myhash', 'f2')).to eq('World')
     end
 
     it 'does not update existing field' do
-      connection.run_command([:HSET, 'myhash', 'f1', 'Hello'])
+      connection.run_command(:HSET, 'myhash', 'f1', 'Hello')
 
       expect(subject.hsetnx('myhash', 'f1', 'World')).to eq(0)
-      expect(connection.run_command([:HGET, 'myhash', 'f1'])).to eq('Hello')
+      expect(connection.run_command(:HGET, 'myhash', 'f1')).to eq('Hello')
     end
   end
 
@@ -209,7 +209,7 @@ RSpec.describe Oxblood::Session do
   skip '#hstrlen' do
     specify do
       command = [:HMSET, 'myhash', 'f1', 'HelloWorld', 'f2', '99', 'f3', '-256']
-      connection.run_command(command)
+      connection.run_command(*command)
 
       expect(subject.hstrlen('myhash', 'f1')).to eq(10)
       expect(subject.hstrlen('myhash', 'f2')).to eq(2)
@@ -229,8 +229,8 @@ RSpec.describe Oxblood::Session do
 
   describe '#hvals' do
     specify do
-      connection.run_command([:HSET, 'myhash', 'f1', 'Hello'])
-      connection.run_command([:HSET, 'myhash', 'f2', 'World'])
+      connection.run_command(:HSET, 'myhash', 'f1', 'Hello')
+      connection.run_command(:HSET, 'myhash', 'f2', 'World')
 
       expect(subject.hvals('myhash')).to contain_exactly('Hello', 'World')
     end
@@ -354,8 +354,8 @@ RSpec.describe Oxblood::Session do
 
   describe '#del' do
     specify do
-      connection.run_command([:SET, 'key1', 'Hello'])
-      connection.run_command([:SET, 'key2', 'World'])
+      connection.run_command(:SET, 'key1', 'Hello')
+      connection.run_command(:SET, 'key2', 'World')
 
       expect(subject.del('key1', 'key2', 'key3')).to eq(2)
     end
@@ -363,7 +363,7 @@ RSpec.describe Oxblood::Session do
 
   describe '#keys' do
     specify do
-      connection.run_command([:MSET, 'one', 1, 'two', 2, 'three', 3, 'four', 4])
+      connection.run_command(:MSET, 'one', 1, 'two', 2, 'three', 3, 'four', 4)
 
       expect(subject.keys('*o*')).to match_array(['two', 'four', 'one'])
       expect(subject.keys('t??')).to eq(['two'])
@@ -373,10 +373,10 @@ RSpec.describe Oxblood::Session do
 
   describe '#expire' do
     specify do
-      connection.run_command([:SET, 'mykey', 'Hello'])
+      connection.run_command(:SET, 'mykey', 'Hello')
 
       expect(subject.expire('mykey', 100)).to eq(1)
-      expect(connection.run_command([:TTL, 'mykey'])).to eq(100)
+      expect(connection.run_command(:TTL, 'mykey')).to eq(100)
     end
   end
 
@@ -386,14 +386,14 @@ RSpec.describe Oxblood::Session do
       expect(subject.sadd(:myset, 'World')).to eq(0)
 
       cmd = [:SMEMBERS, :myset]
-      expect(connection.run_command(cmd)).to match_array(['Hello', 'World'])
+      expect(connection.run_command(*cmd)).to match_array(['Hello', 'World'])
     end
   end
 
   describe '#sunion' do
     specify do
-      %w(a b c).each { |c| connection.run_command([:SADD, :key1, c]) }
-      %w(c d e).each { |c| connection.run_command([:SADD, :key2, c]) }
+      %w(a b c).each { |c| connection.run_command(:SADD, :key1, c) }
+      %w(c d e).each { |c| connection.run_command(:SADD, :key2, c) }
 
       expect(subject.sunion(:key1, :key2)).to match_array(%w(a b c d e))
     end
@@ -405,13 +405,13 @@ RSpec.describe Oxblood::Session do
       expect(subject.zadd(:myzset, [2, 'two', 3, 'three'])).to eq(2)
       cmd = [:ZRANGE, :myzset, 0, -1, 'WITHSCORES']
       result = ['one', '1', 'two', '2', 'three', '3']
-      expect(connection.run_command(cmd)).to eq(result)
+      expect(connection.run_command(*cmd)).to eq(result)
     end
   end
 
   describe '#zrangebyscore' do
     specify do
-      connection.run_command([:ZADD, :myzset, [1, 'one', 2, 'two', 3, 'three']])
+      connection.run_command(:ZADD, :myzset, [1, 'one', 2, 'two', 3, 'three'])
 
       members = ['one', 'two', 'three']
       expect(subject.zrangebyscore(:myzset, '-inf', '+inf')).to eq(members)

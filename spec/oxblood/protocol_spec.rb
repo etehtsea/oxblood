@@ -2,50 +2,50 @@ require 'oxblood/protocol'
 
 RSpec.describe Oxblood::Protocol do
   describe '.build_command' do
-    def build(command)
-      described_class::build_command(command)
+    def build(*command)
+      described_class::build_command(*command)
     end
 
     specify do
-      expect(build([0])).to eq("*1\r\n$1\r\n0\r\n")
+      expect(build(0)).to eq("*1\r\n$1\r\n0\r\n")
     end
 
     specify do
-      expect(build([1000])).to eq("*1\r\n$4\r\n1000\r\n")
+      expect(build(1000)).to eq("*1\r\n$4\r\n1000\r\n")
     end
 
     specify do
-      expect(build([''])).to eq("*1\r\n$0\r\n\r\n")
+      expect(build('')).to eq("*1\r\n$0\r\n\r\n")
     end
 
     specify do
-      expect(build(['foobar'])).to eq("*1\r\n$6\r\nfoobar\r\n")
+      expect(build('foobar')).to eq("*1\r\n$6\r\nfoobar\r\n")
     end
 
     specify do
-      expect(build([:foobar])).to eq("*1\r\n$6\r\nfoobar\r\n")
+      expect(build(:foobar)).to eq("*1\r\n$6\r\nfoobar\r\n")
     end
 
     specify do
-      expect(build([])).to eq("*0\r\n")
+      expect(build).to eq("*0\r\n")
     end
 
     specify do
-      expect(build(['foo', 'bar'])).to eq("*2\r\n$3\r\nfoo\r\n$3\r\nbar\r\n")
+      expect(build('foo', 'bar')).to eq("*2\r\n$3\r\nfoo\r\n$3\r\nbar\r\n")
     end
 
     specify do
-      expect(build([1, 2 ,3])).to eq("*3\r\n$1\r\n1\r\n$1\r\n2\r\n$1\r\n3\r\n")
+      expect(build(1, 2 ,3)).to eq("*3\r\n$1\r\n1\r\n$1\r\n2\r\n$1\r\n3\r\n")
     end
 
     specify do
       out = "*2\r\n$1\r\n1\r\n$12\r\nfoobarfoobar\r\n"
-      expect(build([1, 'foobarfoobar'])).to eq(out)
+      expect(build(1, 'foobarfoobar')).to eq(out)
     end
 
     specify do
       out = "*3\r\n$5\r\nwatch\r\n$3\r\nfoo\r\n$3\r\nbar\r\n"
-      expect(build([:watch, ['foo', 'bar']])).to eq(out)
+      expect(build(:watch, ['foo', 'bar'])).to eq(out)
     end
   end
 

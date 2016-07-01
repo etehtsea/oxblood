@@ -322,12 +322,12 @@ module Oxblood
 
     protected
 
-    def serialize(command)
-      Protocol.build_command(command)
+    def serialize(*command)
+      Protocol.build_command(*command)
     end
 
     def run(*command)
-      @connection.write(serialize(command))
+      @connection.write(serialize(*command))
       @connection.read_response
     end
 

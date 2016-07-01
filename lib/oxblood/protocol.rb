@@ -92,13 +92,19 @@ module Oxblood
       # @note Written in non-idiomatic ruby without error handling due to
       #       performance reasons
       # @see http://www.redis.io/topics/protocol#sending-commands-to-a-redis-server
+      #
       # @raise [SerializerError] if unable to serialize given command
-      # @param [Array] command array consisting of redis command and arguments
+      #
+      # @param [#to_s] command name
+      # @param [Array] args array consisting of command arguments
+      #
       # @return [String] serialized command
-      def build_command(command)
-        result = COMMAND_HEADER.dup
-        size = 0
-        command.each do |c|
+      def build_command(command = nil, *args)
+        return EMPTY_ARRAY_RESPONSE if command.nil?
+
+        result = append!(command, COMMAND_HEADER.dup)
+        size = 1
+        args.each do |c|
           if Array === c
             c.each do |e|
               append!(e, result)
