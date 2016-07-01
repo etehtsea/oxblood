@@ -6,8 +6,11 @@ class Redis
   module Connection
     class Oxblood
       def self.connect(config)
-        conn_type = config[:scheme] == 'unix' ? :unix : :tcp
-        connection = ::Oxblood::Connection.public_send(:"connect_#{conn_type}", config)
+        unless config[:path]
+          config = config.dup
+          config.delete(:path)
+        end
+        connection = ::Oxblood::Connection.open(config)
 
         new(connection)
       end
@@ -39,6 +42,8 @@ class Redis
         reply
       rescue ::Oxblood::Protocol::ParserError => e
         raise Redis::ProtocolError.new(e.message)
+      rescue ::Oxblood::Connection::TimeoutError => e
+        raise Redis::TimeoutError.new(e.message)
       end
 
       if defined?(Encoding::default_external)
