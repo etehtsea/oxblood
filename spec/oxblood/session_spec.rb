@@ -1,4 +1,5 @@
 require 'oxblood/session'
+require 'oxblood/connection'
 
 RSpec.describe Oxblood::Session do
   let(:connection) do
