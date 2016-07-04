@@ -1,6 +1,7 @@
 # Oxblood
 
 [![Gem Version](https://badge.fury.io/rb/oxblood.svg)](https://badge.fury.io/rb/oxblood)
+[![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://rubydoc.info/github/etehtsea/oxblood/master/frames)
 [![Code Climate](https://codeclimate.com/github/etehtsea/oxblood/badges/gpa.svg)](https://codeclimate.com/github/etehtsea/oxblood)
 [![Test Coverage](https://codeclimate.com/github/etehtsea/oxblood/badges/coverage.svg)](https://codeclimate.com/github/etehtsea/oxblood/coverage)
 [![Issue Count](https://codeclimate.com/github/etehtsea/oxblood/badges/issue_count.svg)](https://codeclimate.com/github/etehtsea/oxblood)
