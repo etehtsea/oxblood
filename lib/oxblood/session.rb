@@ -326,6 +326,8 @@ module Oxblood
     # @param [String] key under which set is stored
     # @param [String] min value
     # @param [String] max value
+    #
+    # @return [Array] list of elements in the specified score range
     def zrangebyscore(key, min, max)
       run(:ZRANGEBYSCORE, key, min, max)
     end
