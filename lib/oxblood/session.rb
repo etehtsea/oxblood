@@ -330,6 +330,17 @@ module Oxblood
       run(:ZRANGEBYSCORE, key, min, max)
     end
 
+    # Remove one or more members from a sorted set
+    # @see http://redis.io/commands/zrem
+    #
+    # @param [String] key
+    # @param [Array<String>] members to delete
+    #
+    # @return [Integer] number of deleted members
+    def zrem(key, *members)
+      run(*members.unshift(:ZREM, key))
+    end
+
     protected
 
     def serialize(*command)

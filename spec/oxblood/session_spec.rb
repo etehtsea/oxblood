@@ -426,4 +426,27 @@ RSpec.describe Oxblood::Session do
       expect(subject.zrangebyscore(:myzset, '(1', '(2')).to eq([])
     end
   end
+
+  describe '#zrem' do
+    specify do
+      connection.run_command(:ZADD, :myzset, [1, 'one'])
+      expect(subject.zrem(:myzset, 'zero', 'two')).to eq(0)
+    end
+
+    specify do
+      error_msg = 'WRONGTYPE Operation against a key holding the wrong kind of value'
+      connection.run_command(:SET, :mykey, 'value')
+      response = subject.zrem(:mykey, 'zero')
+
+      expect(response).to be_a(Oxblood::Protocol::RError)
+      expect(response.message).to eq(error_msg)
+    end
+
+    specify do
+      connection.run_command(:ZADD, :myzset, [1, 'one', 2, 'two', 3, 'three'])
+      expect(subject.zrem(:myzset, 'two')).to eq(1)
+      set = connection.run_command(:ZRANGE, :myzset, 0, -1, :WITHSCORES)
+      expect(set).to eq(['one', '1', 'three', '3'])
+    end
+  end
 end
