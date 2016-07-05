@@ -8,6 +8,11 @@
 
 An experimental Redis Ruby client.
 
+## Compatibility
+
+- Ruby 2.2.2+
+- JRuby 9k+
+
 ## Usage
 
 ### Standalone
