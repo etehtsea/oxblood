@@ -496,6 +496,21 @@ RSpec.describe Oxblood::Session do
     end
   end
 
+  describe '#pexpireat' do
+    let(:tomorrow) do
+      (Time.now + 86400).to_i * 1000
+    end
+
+    specify do
+      expect(subject.pexpireat('nosuchkey', tomorrow)).to eq(0)
+    end
+
+    specify do
+      connection.run_command(:SET, 'key', 'value')
+      expect(subject.pexpireat('key', tomorrow)).to eq(1)
+    end
+  end
+
   describe '#sadd' do
     specify do
       expect(subject.sadd(:myset, 'Hello', 'World')).to eq(2)

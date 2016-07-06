@@ -357,6 +357,17 @@ module Oxblood
       run(:PEXPIRE, key, milliseconds)
     end
 
+    # Set the expiration for a key as a UNIX timestamp specified in milliseconds
+    # @see http://redis.io/commands/pexpireat
+    #
+    # @param [String] key
+    # @param [Integer] timestamp in milliseconds
+    #
+    # @return [Integer] 1 if the timeout was set and 0 otherwise
+    def pexpireat(key, timestamp)
+      run(:PEXPIREAT, key, timestamp)
+    end
+
     # ------------------ Sets ------------------------
 
     # Add one or more members to a set
