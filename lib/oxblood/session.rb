@@ -453,6 +453,16 @@ module Oxblood
       run(:TTL, key)
     end
 
+    # Determine the type stored at key
+    # @see http://redis.io/commands/type
+    #
+    # @param [String] key
+    #
+    # @return [String] type of key, or none when key does not exist.
+    def type(key)
+      run(:TYPE, key)
+    end
+
     # ------------------ Sets ------------------------
 
     # Add one or more members to a set

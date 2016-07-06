@@ -615,6 +615,17 @@ RSpec.describe Oxblood::Session do
     end
   end
 
+  describe '#type' do
+    specify do
+      expect(subject.type('key')).to eq('none')
+    end
+
+    specify do
+      connection.run_command(:SET, 'key', 'value')
+      expect(subject.type('key')).to eq('string')
+    end
+  end
+
   describe '#sadd' do
     specify do
       expect(subject.sadd(:myset, 'Hello', 'World')).to eq(2)
