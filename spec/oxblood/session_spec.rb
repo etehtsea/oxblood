@@ -393,6 +393,15 @@ RSpec.describe Oxblood::Session do
     end
   end
 
+  describe '#expire' do
+    specify do
+      connection.run_command(:SET, 'mykey', 'Hello')
+
+      expect(subject.expire('mykey', 100)).to eq(1)
+      expect(connection.run_command(:TTL, 'mykey')).to eq(100)
+    end
+  end
+
   describe '#keys' do
     specify do
       connection.run_command(:MSET, 'one', 1, 'two', 2, 'three', 3, 'four', 4)
@@ -400,15 +409,6 @@ RSpec.describe Oxblood::Session do
       expect(subject.keys('*o*')).to match_array(['two', 'four', 'one'])
       expect(subject.keys('t??')).to eq(['two'])
       expect(subject.keys('*')).to match_array(['two', 'four', 'one', 'three'])
-    end
-  end
-
-  describe '#expire' do
-    specify do
-      connection.run_command(:SET, 'mykey', 'Hello')
-
-      expect(subject.expire('mykey', 100)).to eq(1)
-      expect(connection.run_command(:TTL, 'mykey')).to eq(100)
     end
   end
 

@@ -281,14 +281,6 @@ module Oxblood
       run(*keys.unshift(:EXISTS))
     end
 
-    # Find all keys matching the given pattern
-    # @see http://redis.io/commands/keys
-    #
-    # @param [String] pattern used to match keys
-    def keys(pattern)
-      run(:KEYS, pattern)
-    end
-
     # Set a key's time to live in seconds
     # @see http://redis.io/commands/expire
     #
@@ -299,6 +291,14 @@ module Oxblood
     #   the timeout could not be set.
     def expire(key, seconds)
       run(:EXPIRE, key, seconds)
+    end
+
+    # Find all keys matching the given pattern
+    # @see http://redis.io/commands/keys
+    #
+    # @param [String] pattern used to match keys
+    def keys(pattern)
+      run(:KEYS, pattern)
     end
 
     # ------------------ Sets ------------------------
