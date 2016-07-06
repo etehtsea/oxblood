@@ -406,6 +406,21 @@ module Oxblood
     def rename(key, newkey)
       run(:RENAME, key, newkey)
     end
+
+    # Rename a key, only if the new key does not exist
+    # @see http://redis.io/commands/renamenx
+    #
+    # @param [String] key to rename
+    # @param [String] newkey
+    #
+    # @return [Integer] 1 if key was renamed to newkey. 0 if newkey already
+    #   exists.
+    # @return [RError] if key does not exist. Before Redis 3.2.0, an error is
+    #   returned if source and destination names are the same.
+    def renamenx(key, newkey)
+      run(:RENAMENX, key, newkey)
+    end
+
     # ------------------ Sets ------------------------
 
     # Add one or more members to a set

@@ -555,6 +555,29 @@ RSpec.describe Oxblood::Session do
     end
   end
 
+  describe '#renamenx' do
+    specify do
+      error_msg = 'ERR no such key'
+      response = subject.renamenx('nosuchkey', 'newkey')
+      expect(response).to be_a(Oxblood::Protocol::RError)
+      expect(response.message).to eq(error_msg)
+    end
+
+    specify do
+      connection.run_command(:SET, 'key', 'value')
+      expect(subject.renamenx('key', 'newkey')).to eq(1)
+      expect(connection.run_command(:GET, 'newkey')).to eq('value')
+    end
+
+    specify do
+      connection.run_command(:SET, 'key', 'key')
+      connection.run_command(:SET, 'newkey', 'newkey')
+
+      expect(subject.renamenx('key', 'newkey')).to eq(0)
+      expect(connection.run_command(:GET, 'newkey')).to eq('newkey')
+    end
+  end
+
   describe '#sadd' do
     specify do
       expect(subject.sadd(:myset, 'Hello', 'World')).to eq(2)
