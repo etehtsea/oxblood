@@ -2,8 +2,12 @@ require 'oxblood/session'
 require 'oxblood/connection'
 
 RSpec.describe Oxblood::Session do
+  before(:context) do
+    @connection = Oxblood::Connection.open
+  end
+
   let(:connection) do
-    Oxblood::Connection.open
+    @connection
   end
 
   subject do
