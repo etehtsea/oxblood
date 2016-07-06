@@ -379,6 +379,15 @@ module Oxblood
       run(:PTTL, key)
     end
 
+    # Return a random key from the keyspace
+    # @see http://redis.io/commands/randomkey
+    #
+    # @return [String] the random key
+    # @return [nil] if database is empty
+    def randomkey
+      run(:RANDOMKEY)
+    end
+
     # ------------------ Sets ------------------------
 
     # Add one or more members to a set

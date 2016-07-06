@@ -529,6 +529,17 @@ RSpec.describe Oxblood::Session do
     end
   end
 
+  describe '#randomkey' do
+    specify do
+      expect(subject.randomkey).to be_nil
+    end
+
+    specify do
+      connection.run_command(:SET, 'key', 'value')
+      expect(subject.randomkey).to eq('key')
+    end
+  end
+
   describe '#sadd' do
     specify do
       expect(subject.sadd(:myset, 'Hello', 'World')).to eq(2)
