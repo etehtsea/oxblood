@@ -72,6 +72,9 @@ module Oxblood
     # @param [Integer] increment by value
     #
     # @return [String] the value of field after the increment
+    # @return [RError] field contains a value of the wrong type (not a string).
+    #   Or the current field content or the specified increment are not parsable
+    #   as a double precision floating point number.
     def hincrbyfloat(key, field, increment)
       run(:HINCRBYFLOAT, key, field, increment)
     end
@@ -188,6 +191,8 @@ module Oxblood
     # @param [String] password
     #
     # @return [String] 'OK'
+    # @return [RError] if wrong password was passed or server does not require
+    #   password
     def auth(password)
       run(:AUTH, password)
     end
@@ -231,6 +236,7 @@ module Oxblood
     # @param [Integer] index database to switch
     #
     # @return [String] 'OK'
+    # @return [RError] if wrong index was passed
     def select(index)
       run(:SELECT, index)
     end
@@ -460,6 +466,7 @@ module Oxblood
     # @param [Array<String>] members to delete
     #
     # @return [Integer] number of deleted members
+    # @return [RError] when key exists and does not hold a sorted set.
     def zrem(key, *members)
       run(*members.unshift(:ZREM, key))
     end
