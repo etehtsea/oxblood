@@ -259,6 +259,16 @@ module Oxblood
       run(*keys.unshift(:DEL))
     end
 
+    # Return a serialized version of the value stored at specified key.
+    # @see http://redis.io/commands/dump
+    #
+    # @param [String] key
+    #
+    # @return [String] serialized value
+    def dump(key)
+      run(:DUMP, key)
+    end
+
     # Find all keys matching the given pattern
     # @see http://redis.io/commands/keys
     #

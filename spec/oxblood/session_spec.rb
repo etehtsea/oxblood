@@ -367,6 +367,20 @@ RSpec.describe Oxblood::Session do
     end
   end
 
+  describe '#dump' do
+    specify do
+      expect(subject.dump('nonexistingkey')).to be_nil
+    end
+
+    specify do
+      connection.run_command(:SET, 'key', 10)
+      value = subject.dump('key')
+      connection.run_command(:DEL, 'key')
+      connection.run_command(:RESTORE, 'key', 0, value)
+      expect(connection.run_command(:GET, 'key')).to eq('10')
+    end
+  end
+
   describe '#keys' do
     specify do
       connection.run_command(:MSET, 'one', 1, 'two', 2, 'three', 3, 'four', 4)
