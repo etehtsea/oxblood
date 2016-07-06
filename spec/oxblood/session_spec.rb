@@ -14,7 +14,7 @@ RSpec.describe Oxblood::Session do
     described_class.new(connection)
   end
 
-  before do
+  after do
     connection.run_command(:FLUSHDB)
   end
 
@@ -429,16 +429,10 @@ RSpec.describe Oxblood::Session do
     let(:origin_db) { 0 }
     let(:target_db) { 1 }
 
-    def flushdb
+    after do
       connection.run_command(:SELECT, target_db)
       connection.run_command(:FLUSHDB)
       connection.run_command(:SELECT, origin_db)
-    end
-
-    around do |example|
-      flushdb
-      example.run
-      flushdb
     end
 
     specify do
