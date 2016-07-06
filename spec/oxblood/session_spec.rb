@@ -402,6 +402,15 @@ RSpec.describe Oxblood::Session do
     end
   end
 
+  describe '#expireat' do
+    specify do
+      connection.run_command(:SET, 'mykey', 'Hello')
+
+      expect(subject.expireat('mykey', 0)).to eq(1)
+      expect(connection.run_command(:EXISTS, 'mykey')).to eq(0)
+    end
+  end
+
   describe '#keys' do
     specify do
       connection.run_command(:MSET, 'one', 1, 'two', 2, 'three', 3, 'four', 4)

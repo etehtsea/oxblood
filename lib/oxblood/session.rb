@@ -293,6 +293,18 @@ module Oxblood
       run(:EXPIRE, key, seconds)
     end
 
+    # Set the expiration for a key as a UNIX timestamp
+    # @see http://redis.io/commands/expireat
+    #
+    # @param [String] key
+    # @param [Integer] timestamp in UNIX format
+    #
+    # @return [Integer] 1 if the timeout was set. 0 if key does not exist or
+    #   the timeout could not be set.
+    def expireat(key, timestamp)
+      run(:EXPIREAT, key, timestamp)
+    end
+
     # Find all keys matching the given pattern
     # @see http://redis.io/commands/keys
     #
