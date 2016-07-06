@@ -269,6 +269,18 @@ module Oxblood
       run(:DUMP, key)
     end
 
+    # Determine if a key exists
+    # @see http://redis.io/commands/exists
+    #
+    # @param [String, Array<String>] keys to check
+    #
+    # @return [Integer] the number of keys existing among the ones specified as
+    #   arguments. Keys mentioned multiple times and existing are counted
+    #   multiple times.
+    def exists(*keys)
+      run(*keys.unshift(:EXISTS))
+    end
+
     # Find all keys matching the given pattern
     # @see http://redis.io/commands/keys
     #

@@ -381,6 +381,18 @@ RSpec.describe Oxblood::Session do
     end
   end
 
+  describe '#exists' do
+    specify do
+      connection.run_command(:SET, 'key1', 'value')
+      connection.run_command(:SET, 'key2', 'value')
+
+      expect(subject.exists('nosuchkey')).to eq(0)
+      expect(subject.exists('key1')).to eq(1)
+      expect(subject.exists('key1', 'key1')).to eq(2)
+      expect(subject.exists('key1', 'key2', 'nosuchkey')).to eq(2)
+    end
+  end
+
   describe '#keys' do
     specify do
       connection.run_command(:MSET, 'one', 1, 'two', 2, 'three', 3, 'four', 4)
