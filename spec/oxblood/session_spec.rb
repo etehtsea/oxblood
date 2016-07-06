@@ -511,6 +511,24 @@ RSpec.describe Oxblood::Session do
     end
   end
 
+  describe '#pttl' do
+    specify do
+      expect(subject.pttl('nosuchkey')).to be < 0
+    end
+
+    specify do
+      connection.run_command(:SET, 'key', 'value')
+      expect(subject.pttl('key')).to be < 0
+    end
+
+    specify do
+      connection.run_command(:SET, 'key', 'value')
+      connection.run_command(:EXPIRE, 'key', 10)
+
+      expect(subject.pttl('key')).to be_between(1, 10000)
+    end
+  end
+
   describe '#sadd' do
     specify do
       expect(subject.sadd(:myset, 'Hello', 'World')).to eq(2)

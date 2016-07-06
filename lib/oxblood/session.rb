@@ -368,6 +368,17 @@ module Oxblood
       run(:PEXPIREAT, key, timestamp)
     end
 
+    # Get the time to live for a key in milliseconds
+    # @see http://redis.io/commands/pttl
+    #
+    # @param [String] key
+    #
+    # @return [Integer] TTL in milliseconds, or a negative value in order to
+    #   signal an error
+    def pttl(key)
+      run(:PTTL, key)
+    end
+
     # ------------------ Sets ------------------------
 
     # Add one or more members to a set
