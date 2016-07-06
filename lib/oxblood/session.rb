@@ -313,6 +313,17 @@ module Oxblood
       run(:KEYS, pattern)
     end
 
+    # Move a key to another database
+    # @see http://redis.io/commands/move
+    #
+    # @param [String] key
+    # @param [Integer] db index
+    #
+    # @return [Integer] 1 if key was moved and 0 otherwise.
+    def move(key, db)
+      run(:MOVE, key, db)
+    end
+
     # ------------------ Sets ------------------------
 
     # Add one or more members to a set

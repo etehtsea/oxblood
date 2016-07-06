@@ -421,6 +421,41 @@ RSpec.describe Oxblood::Session do
     end
   end
 
+  describe '#move' do
+    let(:origin_db) { 0 }
+    let(:target_db) { 1 }
+
+    def flushdb
+      connection.run_command(:SELECT, target_db)
+      connection.run_command(:FLUSHDB)
+      connection.run_command(:SELECT, origin_db)
+    end
+
+    around do |example|
+      flushdb
+      example.run
+      flushdb
+    end
+
+    specify do
+      expect(subject.move('nosuchkey', target_db)).to eq(0)
+    end
+
+    specify do
+      connection.run_command(:SELECT, target_db)
+      connection.run_command(:SET, 'key', 'value')
+      connection.run_command(:SELECT, origin_db)
+
+      expect(subject.move('key', target_db)).to eq(0)
+    end
+
+    specify do
+      connection.run_command(:SET, 'key', 'value')
+
+      expect(subject.move('key', target_db)).to eq(1)
+    end
+  end
+
   describe '#sadd' do
     specify do
       expect(subject.sadd(:myset, 'Hello', 'World')).to eq(2)
