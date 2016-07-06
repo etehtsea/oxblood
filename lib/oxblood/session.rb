@@ -388,6 +388,18 @@ module Oxblood
       run(:RANDOMKEY)
     end
 
+    # Rename a key
+    # @see http://redis.io/commands/rename
+    #
+    # @param [String] key to rename
+    # @param [String] newkey
+    #
+    # @return [String] OK in case of success
+    # @return [RError] if key does not exist. Before Redis 3.2.0, an error is
+    #   returned if source and destination names are the same.
+    def rename(key, newkey)
+      run(:RENAME, key, newkey)
+    end
     # ------------------ Sets ------------------------
 
     # Add one or more members to a set

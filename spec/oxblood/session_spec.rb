@@ -540,6 +540,21 @@ RSpec.describe Oxblood::Session do
     end
   end
 
+  describe '#rename' do
+    specify do
+      error_msg = 'ERR no such key'
+      response = subject.rename('nosuchkey', 'newkey')
+      expect(response).to be_a(Oxblood::Protocol::RError)
+      expect(response.message).to eq(error_msg)
+    end
+
+    specify do
+      connection.run_command(:SET, 'key', 'value')
+      expect(subject.rename('key', 'newkey')).to eq('OK')
+      expect(connection.run_command(:GET, 'newkey')).to eq('value')
+    end
+  end
+
   describe '#sadd' do
     specify do
       expect(subject.sadd(:myset, 'Hello', 'World')).to eq(2)
