@@ -442,6 +442,17 @@ module Oxblood
       run(*args)
     end
 
+    # Get the time to live for a key
+    # @see http://redis.io/commands/ttl
+    #
+    # @param [String] key
+    #
+    # @return [Integer] TTL in seconds, or a negative value in order to signal
+    #   an error
+    def ttl(key)
+      run(:TTL, key)
+    end
+
     # ------------------ Sets ------------------------
 
     # Add one or more members to a set
