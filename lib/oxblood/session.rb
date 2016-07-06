@@ -324,6 +324,19 @@ module Oxblood
       run(:MOVE, key, db)
     end
 
+    # Inspect the internals of Redis objects
+    # @see http://redis.io/commands/object
+    #
+    # @param [String] subcommand `REFCOUNT`, `ENCODING`, `IDLETIME`
+    # @param [String] key
+    #
+    # @return [Integer] in case of `REFCOUNT` and `IDLETIME` subcommands
+    # @return [String] in case of `ENCODING` subcommand
+    # @return [nil] if object you try to inspect is missing
+    def object(subcommand, key)
+      run(:OBJECT, subcommand, key)
+    end
+
     # ------------------ Sets ------------------------
 
     # Add one or more members to a set

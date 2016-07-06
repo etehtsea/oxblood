@@ -454,6 +454,19 @@ RSpec.describe Oxblood::Session do
     end
   end
 
+  describe '#object' do
+    specify do
+      expect(subject.object(:refcount, 'nosuchkey')).to eq(nil)
+    end
+
+    specify do
+      connection.run_command(:LPUSH, 'mylist', 'Hello world')
+      expect(subject.object(:refcount, 'mylist')).to be_a(Integer)
+      expect(subject.object(:encoding, 'mylist')).to be_a(String)
+      expect(subject.object(:idletime, 'mylist')).to be_a(Integer)
+    end
+  end
+
   describe '#sadd' do
     specify do
       expect(subject.sadd(:myset, 'Hello', 'World')).to eq(2)
