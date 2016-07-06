@@ -578,6 +578,25 @@ RSpec.describe Oxblood::Session do
     end
   end
 
+  describe '#restore' do
+    specify do
+      connection.run_command(:SET, 'key', 10)
+      value = connection.run_command(:DUMP, 'key')
+
+      response = subject.restore('key', 0, value)
+      expect(response).to be_a(Oxblood::Protocol::RError)
+    end
+
+    specify do
+      connection.run_command(:SET, 'key', 10)
+      value = connection.run_command(:DUMP, 'key')
+      connection.run_command(:DEL, 'key')
+
+      expect(subject.restore('key', 0, value)).to eq('OK')
+      expect(connection.run_command(:GET, 'key')).to eq('10')
+    end
+  end
+
   describe '#sadd' do
     specify do
       expect(subject.sadd(:myset, 'Hello', 'World')).to eq(2)

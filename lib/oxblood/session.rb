@@ -421,6 +421,27 @@ module Oxblood
       run(:RENAMENX, key, newkey)
     end
 
+    # Create a key using the provided serialized value, previously obtained
+    # using DUMP
+    # @see http://redis.io/commands/restore
+    #
+    # @param [String] key
+    # @param [Integer] ttl expire time in milliseconds
+    # @param [String] serialized_value obtained using DUMP command
+    # @param [Hash] opts
+    #
+    # @option opts [Boolean] :replace (false) Override key if it already exists
+    #
+    # @return [String] OK on success
+    # @return [RError] if replace is false and key already exists or RDB version
+    #   and data checksum don't match.
+    def restore(key, ttl, serialized_value, opts = {})
+      args = [:RESTORE, key, ttl, serialized_value]
+      args << :REPLACE if opts[:replace]
+
+      run(*args)
+    end
+
     # ------------------ Sets ------------------------
 
     # Add one or more members to a set
