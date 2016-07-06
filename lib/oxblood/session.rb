@@ -346,6 +346,17 @@ module Oxblood
       run(:PERSIST, key)
     end
 
+    # Set a key's time to live in milliseconds
+    # @see http://redis.io/commands/pexpire
+    #
+    # @param [String] key
+    # @param [Integer] milliseconds
+    #
+    # @return [Integer] 1 if the timeout was set and 0 otherwise
+    def pexpire(key, milliseconds)
+      run(:PEXPIRE, key, milliseconds)
+    end
+
     # ------------------ Sets ------------------------
 
     # Add one or more members to a set

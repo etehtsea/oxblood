@@ -485,6 +485,17 @@ RSpec.describe Oxblood::Session do
     end
   end
 
+  describe '#pexpire' do
+    specify do
+      expect(subject.pexpire('nosuchkey', 15000)).to eq(0)
+    end
+
+    specify do
+      connection.run_command(:SET, 'key', 'value')
+      expect(subject.pexpire('key', 15000)).to eq(1)
+    end
+  end
+
   describe '#sadd' do
     specify do
       expect(subject.sadd(:myset, 'Hello', 'World')).to eq(2)
