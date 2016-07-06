@@ -337,6 +337,15 @@ module Oxblood
       run(:OBJECT, subcommand, key)
     end
 
+    # Remove expiration from a key
+    # @see http://redis.io/commands/persist
+    # @param [String] key
+    #
+    # @return [Integer] 1 if the timeout was removed and 0 otherwise
+    def persist(key)
+      run(:PERSIST, key)
+    end
+
     # ------------------ Sets ------------------------
 
     # Add one or more members to a set
