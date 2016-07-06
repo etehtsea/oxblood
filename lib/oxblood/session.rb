@@ -248,9 +248,10 @@ module Oxblood
     # @see http://redis.io/commands/info
     #
     # @param [String] section used to select a specific section of information
+    #
+    # @return [String] raw redis server response as a collection of text lines.
     def info(section = nil)
       section ? run(:INFO, section) : run(:INFO)
-      # FIXME: Parse response
     end
 
     # ------------------ Keys ------------------------
