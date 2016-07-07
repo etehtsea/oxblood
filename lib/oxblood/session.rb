@@ -174,13 +174,6 @@ module Oxblood
       run(:HVALS, key)
     end
 
-    # Incrementally iterate hash fields and associated values
-    # @see http://redis.io/commands/hscan
-    #
-    # @todo Implement this command
-    def hscan(key, cursor)
-    end
-
     # ------------------ Strings ---------------------
 
     # ------------------ Connection ---------------------

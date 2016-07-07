@@ -244,13 +244,6 @@ RSpec.describe Oxblood::Session do
     end
   end
 
-  describe '#hscan' do
-    specify do
-      pending('not implemented')
-      fail
-    end
-  end
-
   describe '#auth' do
     context 'with password' do
       before(:context) do
