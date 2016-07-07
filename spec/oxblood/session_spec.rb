@@ -208,9 +208,7 @@ RSpec.describe Oxblood::Session do
     end
   end
 
-  # FIXME: enable this when specs will run under different redis versions
-  # This command was introduced in later versions than default redis in Travis
-  skip '#hstrlen' do
+  describe '#hstrlen', if: server_newer_than('3.2.0') do
     specify do
       command = [:HMSET, 'myhash', 'f1', 'HelloWorld', 'f2', '99', 'f3', '-256']
       connection.run_command(*command)
@@ -379,12 +377,17 @@ RSpec.describe Oxblood::Session do
   end
 
   describe '#exists' do
-    specify do
+    before do
       connection.run_command(:SET, 'key1', 'value')
       connection.run_command(:SET, 'key2', 'value')
+    end
 
+    specify do
       expect(subject.exists('nosuchkey')).to eq(0)
       expect(subject.exists('key1')).to eq(1)
+    end
+
+    it 'supports multiple keys', if: server_newer_than('3.0.3') do
       expect(subject.exists('key1', 'key1')).to eq(2)
       expect(subject.exists('key1', 'key2', 'nosuchkey')).to eq(2)
     end

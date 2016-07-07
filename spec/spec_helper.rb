@@ -1,6 +1,9 @@
 require 'codeclimate-test-reporter'
 CodeClimate::TestReporter.start
 
+
+Dir['./spec/support/**/*.rb'].sort.each { |f| require f }
+
 RSpec.configure do |c|
   c.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
@@ -20,10 +23,10 @@ RSpec.configure do |c|
   c.disable_monkey_patching!
   c.warnings = true
 
+  c.extend ExampleGroupsHelpers
+
   c.default_formatter = 'doc' if c.files_to_run.one?
   c.profile_examples = 3
   c.order = :random
   Kernel.srand c.seed
 end
-
-Dir['./spec/support/**/*.rb'].sort.each { |f| require f }
