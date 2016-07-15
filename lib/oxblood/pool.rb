@@ -4,7 +4,11 @@ require 'oxblood/pipeline'
 require 'oxblood/connection'
 
 module Oxblood
-  # Connection pool to Redis server
+  # Create connection pool. For the most use cases this is entrypoint API.
+  #
+  # @example
+  #   pool = Oxblood::Pool.new(size: 8)
+  #   pool.with { |c| c.ping } # => 'PONG'
   class Pool
     # Initialize connection pool
     #

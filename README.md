@@ -2,9 +2,9 @@
 
 [![Gem Version](https://badge.fury.io/rb/oxblood.svg)](https://badge.fury.io/rb/oxblood)
 [![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://rubydoc.info/github/etehtsea/oxblood/master/frames)
+[![Build Status](https://travis-ci.org/etehtsea/oxblood.svg?branch=master)](https://travis-ci.org/etehtsea/oxblood)
 [![Code Climate](https://codeclimate.com/github/etehtsea/oxblood/badges/gpa.svg)](https://codeclimate.com/github/etehtsea/oxblood)
 [![Test Coverage](https://codeclimate.com/github/etehtsea/oxblood/badges/coverage.svg)](https://codeclimate.com/github/etehtsea/oxblood/coverage)
-[![Issue Count](https://codeclimate.com/github/etehtsea/oxblood/badges/issue_count.svg)](https://codeclimate.com/github/etehtsea/oxblood)
 
 An experimental Redis Ruby client.
 
@@ -13,34 +13,19 @@ An experimental Redis Ruby client.
 - Ruby 2.2.2+
 - JRuby 9k+
 
+## Supported features
+
+- [Pipeling](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Pipeline)
+- [Connection pooling](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Pool)
+
 ## Usage
+As a starting point please look at [Oxblood::Pool](file:///Users/kes/Projects/redis/oxblood/doc/Oxblood/Pool.html) documentation.
 
-### Standalone
-
-```ruby
-require 'oxblood'
-pool = Oxblood::Pool.new(size: 8)
-pool.with { |c| c.ping }
-```
-
-### As [redis-rb](https://github.com/redis/redis-rb) driver
-
-```ruby
-[1] pry(main)> require 'redis/connection/oxblood'
-=> true
-[2] pry(main)> require 'redis'
-=> true
-# For implicit usage connection should be required before redis gem
-[3] pry(main)> Redis.new.client.options[:driver]
-=> Redis::Connection::Oxblood
-# Explicitly
-[4] pry(main)> Redis.new(driver: :oxblood).client.options[:driver]
-=> Redis::Connection::Oxblood
-```
+## Documentation
+Documentation and usage examples are available on [Rubydoc](http://rubydoc.info/github/etehtsea/oxblood/master/frames).
 
 ## Continuous Integration
-
-[![Build Status](https://travis-ci.org/etehtsea/oxblood.svg?branch=master)](https://travis-ci.org/etehtsea/oxblood)
+You can check CI status at [Travis CI](https://travis-ci.org/etehtsea/oxblood.svg?branch=master).
 
 ## Contributing
 

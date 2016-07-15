@@ -1,4 +1,13 @@
 module Oxblood
+  # Implements usual Request/Response protocol
+  #
+  # @note {Session} don't maintain threadsafety! In multithreaded environment
+  #   please use {Pool}
+  #
+  # @example
+  #   conn = Oxblood::Connection.open
+  #   session = Oxblood::Session.new(conn)
+  #   session.ping # => 'PONG'
   class Session
     def initialize(connection)
       @connection = connection
@@ -174,7 +183,9 @@ module Oxblood
       run(:HVALS, key)
     end
 
-    # ------------------ Strings ---------------------
+    #
+    # Strings
+    #
 
     # Get the value of a key
     # @see http://redis.io/commands/get
@@ -233,7 +244,9 @@ module Oxblood
       run(:SET, key, value)
     end
 
-    # ------------------ Connection ---------------------
+    #
+    # Connection
+    #
 
     # Authenticate to the server
     # @see http://redis.io/commands/auth
@@ -291,7 +304,9 @@ module Oxblood
       run(:SELECT, index)
     end
 
-    # ------------------ Server ---------------------
+    #
+    # Server
+    #
 
     # Remove all keys from the current database
     # @see http://redis.io/commands/flushdb
@@ -312,7 +327,9 @@ module Oxblood
       section ? run(:INFO, section) : run(:INFO)
     end
 
-    # ------------------ Keys ------------------------
+    #
+    # Keys
+    #
 
     # Delete a key
     # @see http://redis.io/commands/del
@@ -522,7 +539,9 @@ module Oxblood
       run(:TYPE, key)
     end
 
-    # ------------------ Lists -----------------------
+    #
+    # Lists
+    #
 
     # Get the length of a list
     # @see http://redis.io/commands/llen
@@ -592,7 +611,9 @@ module Oxblood
       run(*values.unshift(:RPUSH, key))
     end
 
-    # ------------------ Sets ------------------------
+    #
+    # Sets
+    #
 
     # Add one or more members to a set
     # @see http://redis.io/commands/sadd
@@ -649,7 +670,9 @@ module Oxblood
       run(*keys.unshift(:SUNION))
     end
 
-    # ------------------ Sorted Sets -----------------
+    #
+    # Sorted Sets
+    #
 
     # Add one or more members to a sorted set, or update its score if it already
     # exists.
