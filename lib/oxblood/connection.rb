@@ -25,14 +25,14 @@ module Oxblood
       # @return [Oxblood::Connection] connection instance
       def open(opts = {})
         socket = if opts.key?(:path)
-          unix_socket(opts.fetch(:path))
-        else
-          host = opts.fetch(:host, 'localhost')
-          port = opts.fetch(:port, 6379)
-          connect_timeout = opts.fetch(:connect_timeout, 1.0)
+                   unix_socket(opts.fetch(:path))
+                 else
+                   host = opts.fetch(:host, 'localhost')
+                   port = opts.fetch(:port, 6379)
+                   connect_timeout = opts.fetch(:connect_timeout, 1.0)
 
-          tcp_socket(host, port, connect_timeout)
-        end
+                   tcp_socket(host, port, connect_timeout)
+                 end
 
         timeout = opts.fetch(:timeout, 1.0)
 

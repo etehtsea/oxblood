@@ -7,9 +7,7 @@ module Oxblood
     end
 
     def gets(separator, timeout)
-      crlf = nil
-
-      while (crlf = @buffer.index(separator)) == nil
+      while (crlf = @buffer.index(separator)).nil?
         @buffer << _read_from_socket(1024, timeout)
       end
 
