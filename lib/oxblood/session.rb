@@ -176,6 +176,63 @@ module Oxblood
 
     # ------------------ Strings ---------------------
 
+    # Get the value of a key
+    # @see http://redis.io/commands/get
+    #
+    # @param [String] key
+    #
+    # @return [String, nil] the value of key, or nil when key does not exists
+    def get(key)
+      run(:GET, key)
+    end
+
+    # Increment the integer value of a key by one
+    # @see http://redis.io/commands/incr
+    #
+    # @param [String] key
+    #
+    # @return [Integer] the value of key after the increment
+    # @return [RError] if the key contains a value of the wrong type or contains
+    #   a string that can not be represented as integer
+    def incr(key)
+      run(:INCR, key)
+    end
+
+    # Increment the integer value of a key by the given amount
+    # @see http://redis.io/commands/incrby
+    #
+    # @param [String] key
+    # @param [Integer] increment
+    #
+    # @return [Integer] the value of key after the increment
+    def incrby(key, increment)
+      run(:INCRBY, key, increment)
+    end
+
+    # Get the values of all the given keys
+    # @see http://redis.io/commands/mget
+    #
+    # @param [Array<String>] keys to retrieve
+    #
+    # @return [Array] list of values at the specified keys
+    def mget(*keys)
+      run(*keys.unshift(:MGET))
+    end
+
+    # Set the string value of a key
+    # @see http://redis.io/commands/set
+    #
+    # @todo Add support for set options
+    #   http://redis.io/commands/set#options
+    #
+    # @param [String] key
+    # @param [String] value
+    #
+    # @return [String] 'OK' if SET was executed correctly
+    def set(key, value)
+      run(:SET, key, value)
+    end
+
     # ------------------ Connection ---------------------
 
     # Authenticate to the server
@@ -235,6 +292,14 @@ module Oxblood
     end
 
     # ------------------ Server ---------------------
+
+    # Remove all keys from the current database
+    # @see http://redis.io/commands/flushdb
+    #
+    # @return [String] should always return 'OK'
+    def flushdb
+      run(:FLUSHDB)
+    end
 
     # Returns information and statistics about the server in a format that is
     # simple to parse by computers and easy to read by humans
@@ -457,6 +522,76 @@ module Oxblood
       run(:TYPE, key)
     end
 
+    # ------------------ Lists -----------------------
+
+    # Get the length of a list
+    # @see http://redis.io/commands/llen
+    #
+    # @param [String] key
+    #
+    # @return [Integer] the length of the list at key
+    # @return [RError] if the value stored at key is not a list
+    def llen(key)
+      run(:LLEN, key)
+    end
+
+    # Remove and get the first element in a list
+    # @see http://redis.io/commands/lpop
+    #
+    # @param [String] key
+    #
+    # @return [String, nil] the value of the first element,
+    #   or nil when key does not exist.
+    def lpop(key)
+      run(:LPOP, key)
+    end
+
+    # Prepend one or multiple values to a list
+    # @see http://redis.io/commands/lpush
+    #
+    # @param [String] key
+    # @param [Array] values to prepend
+    #
+    # @return [Integer] the length of the list after the push operations
+    def lpush(key, *values)
+      run(*values.unshift(:LPUSH, key))
+    end
+
+    # Get a range of elements from a list
+    # @see http://redis.io/commands/lrange
+    #
+    # @param [String] key
+    # @param [Integer] start index
+    # @param [Integer] stop index
+    #
+    # @return [Array] list of elements in the specified range
+    def lrange(key, start, stop)
+      run(:LRANGE, key, start, stop)
+    end
+
+    # Remove and get the last element in a list
+    # @see http://redis.io/commands/rpop
+    #
+    # @param [String] key
+    #
+    # @return [String, nil] the value of the last element, or nil when key does
+    #   not exist
+    def rpop(key)
+      run(:RPOP, key)
+    end
+
+    # Append one or multiple values to a list
+    # @see http://redis.io/commands/rpush
+    #
+    # @param [String] key
+    # @param [Array] values to add
+    #
+    # @return [Integer] the length of the list after the push operation
+    # @return [RError] if key holds a value that is not a list
+    def rpush(key, *values)
+      run(*values.unshift(:RPUSH, key))
+    end
+
     # ------------------ Sets ------------------------
 
     # Add one or more members to a set
@@ -469,6 +604,39 @@ module Oxblood
     #   not including all the elements already present into the set.
     def sadd(key, *members)
       run(*members.unshift(:SADD, key))
+    end
+
+    # Get the number of members in a set
+    # @see http://redis.io/commands/scard
+    #
+    # @param [String] key
+    #
+    # @return [Integer] the cardinality (number of elements) of the set, or 0 if
+    #   key does not exist
+    def scard(key)
+      run(:SCARD, key)
+    end
+
+    # Get all the members in a set
+    # @see http://redis.io/commands/smembers
+    #
+    # @param [String] key
+    #
+    # @return [Array] all elements of the set
+    def smembers(key)
+      run(:SMEMBERS, key)
+    end
+
+    # Remove one or more members from a set
+    # @see http://redis.io/commands/srem
+    #
+    # @param [String] key
+    # @param [Array] members to remove
+    #
+    # @return [Integer] the number of members that were removed from the set,
+    #   not including non existing members
+    def srem(key, *members)
+      run(*members.unshift(:SREM, key))
     end
 
     # Add multiple sets
@@ -499,14 +667,52 @@ module Oxblood
       run(*args.unshift(:ZADD, key))
     end
 
+    # Get the number of members in a sorted set
+    # @see http://redis.io/commands/zcard
+    #
+    # @param [String] key
+    #
+    # @return [Integer] the cardinality (number of elements) of the sorted set,
+    #   or 0 if key does not exists
+    def zcard(key)
+      run(:ZCARD, key)
+    end
+
+    # Return a range of members in a sorted set, by index
+    # @see http://redis.io/commands/zrange
+    #
+    # @example
+    #   session.zrange('myzset', 0, -1)
+    #   # => ['one', 'two']
+    #
+    # @example
+    #   session.zrange('myzset', 0, -1, withscores: true)
+    #   # => [['one', '1'], ['two', '2']]
+    #
+    # @param [String] key
+    # @param [Integer] start index
+    # @param [Integer] stop index
+    # @param [Hash] opts
+    #
+    # @option opts [Boolean] :withscores (false) Return the scores of
+    #   the elements together with the elements
+    #
+    # @return [Array] list of elements in the specified range (optionally with
+    #   their scores, in case the :withscores option is given)
+    def zrange(key, start, stop, opts = {})
+      args = [:ZRANGE, key, start, stop]
+      args << :WITHSCORES if opts[:withscores]
+      run(*args)
+    end
+
     # Return a range of members in a sorted set, by score
     # @see http://redis.io/commands/zrangebyscore
     #
     # @todo Support optional args (WITHSCORES/LIMIT)
     #
     # @param [String] key under which set is stored
-    # @param [String] min value
-    # @param [String] max value
+    # @param [String] min score
+    # @param [String] max score
     #
     # @return [Array] list of elements in the specified score range
     def zrangebyscore(key, min, max)
@@ -523,6 +729,18 @@ module Oxblood
     # @return [RError] when key exists and does not hold a sorted set.
     def zrem(key, *members)
       run(*members.unshift(:ZREM, key))
+    end
+
+    # Remove all members in a sorted set within the given scores
+    # @see http://redis.io/commands/zremrangebyscore
+    #
+    # @param [String] key
+    # @param [String] min score
+    # @param [String] max score
+    #
+    # @return [Integer] the number of elements removed
+    def zremrangebyscore(key, min, max)
+      run(:ZREMRANGEBYSCORE, key, min, max)
     end
 
     protected

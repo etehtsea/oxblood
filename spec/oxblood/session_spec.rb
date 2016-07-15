@@ -281,6 +281,77 @@ RSpec.describe Oxblood::Session do
     end
   end
 
+  describe '#get' do
+    specify do
+      expect(subject.get(:nonexisting)).to eq(nil)
+    end
+
+    specify do
+      connection.run_command(:SET, :key, 'value')
+      expect(subject.get(:key)).to eq('value')
+    end
+  end
+
+  describe '#incr' do
+    specify do
+      expect(subject.incr('nonexistingkey')).to eq(1)
+    end
+
+    specify do
+      connection.run_command(:SET, 'mystr', 'value')
+      resp = subject.incr('mystr')
+
+      expect(resp).to be_a(Oxblood::Protocol::RError)
+      expect(resp.message).to be
+    end
+
+    specify do
+      connection.run_command(:SET, 'mystr', 10)
+      expect(subject.incr('mystr')).to eq(11)
+      expect(connection.run_command(:GET, 'mystr')).to eq('11')
+    end
+  end
+
+  describe '#incrby' do
+    specify do
+      expect(subject.incrby('nonexistingkey', 10)).to eq(10)
+    end
+
+    specify do
+      connection.run_command(:SET, 'mystr', 'value')
+      resp = subject.incrby('mystr', 5)
+
+      expect(resp).to be_a(Oxblood::Protocol::RError)
+      expect(resp.message).to be
+    end
+
+    specify do
+      connection.run_command(:SET, 'mystr', 10)
+      expect(subject.incrby('mystr', 5)).to eq(15)
+      expect(connection.run_command(:GET, 'mystr')).to eq('15')
+    end
+  end
+
+  describe '#mget' do
+    specify do
+      connection.run_command(:SET, :key1, 'v1')
+      connection.run_command(:SET, :key2, 'v2')
+
+      expect(subject.mget(:key1, :key2, :nonexisting)).to eq(['v1', 'v2', nil])
+    end
+  end
+
+  describe '#set' do
+    specify do
+      expect(subject.set('mykey', 'Hello')).to eq('OK')
+    end
+
+    specify do
+      connection.run_command(:HSET, 'key', 'field', 'value')
+      expect(subject.set('key', 'Hello')).to eq('OK')
+    end
+  end
+
   describe '#auth!' do
     context 'with password' do
       before(:context) do
@@ -350,6 +421,12 @@ RSpec.describe Oxblood::Session do
       response = subject.select('NONSENSE')
       expect(response).to be_a(Oxblood::Protocol::RError)
       expect(response.message).to eq('ERR invalid DB index')
+    end
+  end
+
+  describe '#flushdb' do
+    specify do
+      expect(subject.flushdb).to eq('OK')
     end
   end
 
@@ -622,6 +699,111 @@ RSpec.describe Oxblood::Session do
     end
   end
 
+  describe '#llen' do
+    specify do
+      expect(subject.llen('nonexisting')).to eq(0)
+    end
+
+    specify do
+      connection.run_command(:SET, 'key', 'v')
+      resp = subject.llen('key')
+
+      expect(resp).to be_a(Oxblood::Protocol::RError)
+      expect(resp.message).to be
+    end
+
+    specify do
+      connection.run_command(:LPUSH, 'mylist', 'World')
+      connection.run_command(:LPUSH, 'mylist', 'Hello')
+
+      expect(subject.llen('mylist')).to eq(2)
+    end
+  end
+
+  describe '#lpop' do
+    specify do
+      expect(subject.lpop('nonexisting')).to eq(nil)
+    end
+
+    specify do
+      connection.run_command(:LPUSH, 'mylist', 'Hello')
+
+      expect(subject.lpop('mylist')).to eq('Hello')
+    end
+  end
+
+  describe '#lpush' do
+    specify do
+      expect(subject.lpush('nonexisting', :a)).to eq(1)
+    end
+
+    specify do
+      connection.run_command(:SET, 'key', 'v')
+      resp = subject.lpush('key', :a, :b, :c)
+
+      expect(resp).to be_a(Oxblood::Protocol::RError)
+      expect(resp.message).to be
+    end
+
+    specify do
+      connection.run_command(:LPUSH, 'mylist', :a)
+
+      expect(subject.lpush('mylist', :b, :c, :d)).to eq(4)
+      mylist = connection.run_command(:LRANGE, 'mylist', 0, -1)
+      expect(mylist).to eq(['d', 'c', 'b', 'a'])
+    end
+  end
+
+  describe '#lrange' do
+    specify do
+      expect(subject.lrange('nonexisting', 0, -1)).to eq([])
+    end
+
+    specify do
+      connection.run_command(:RPUSH, 'list', 'one', 'two', 'three')
+
+      expect(subject.lrange('list', 0, 0)).to eq(['one'])
+      expect(subject.lrange('list', -3, 2)).to eq(['one', 'two', 'three'])
+      expect(subject.lrange('list', -100, 100)).to eq(['one', 'two', 'three'])
+      expect(subject.lrange('list', 5, 10)).to eq([])
+    end
+  end
+
+  describe '#rpop' do
+    specify do
+      expect(subject.rpop(:mylist)).to eq(nil)
+    end
+
+    specify do
+      connection.run_command(:RPUSH, 'list', 'a', 'b', 'c')
+
+      expect(subject.rpop('list')).to eq('c')
+      expect(connection.run_command(:LRANGE, 'list', 0, -1)).to eq(['a', 'b'])
+    end
+  end
+
+  describe '#rpush' do
+    specify do
+      expect(subject.rpush('nonexisting', 1, 'str')).to eq(2)
+    end
+
+    specify do
+      connection.run_command(:SET, 'key', 'v')
+      resp = subject.rpush('key', 'Hello')
+
+      expect(resp).to be_a(Oxblood::Protocol::RError)
+      expect(resp.message).to be
+    end
+
+    specify do
+      connection.run_command(:LPUSH, 'mylist', 'Hello')
+
+      expect(subject.rpush('mylist', 'World')).to eq(2)
+      members = connection.run_command(:LRANGE, 'mylist', 0, -1)
+      expect(members).to eq(['Hello', 'World'])
+    end
+  end
+
   describe '#sadd' do
     specify do
       expect(subject.sadd(:myset, 'Hello', 'World')).to eq(2)
@@ -629,6 +811,44 @@ RSpec.describe Oxblood::Session do
 
       cmd = [:SMEMBERS, :myset]
       expect(connection.run_command(*cmd)).to match_array(['Hello', 'World'])
+    end
+  end
+
+  describe '#scard' do
+    specify do
+      expect(subject.scard(:nonexisting)).to eq(0)
+    end
+
+    specify do
+      connection.run_command(:SADD, :myset, 'a', 'b')
+      expect(subject.scard(:myset)).to eq(2)
+    end
+  end
+
+  describe '#smembers' do
+    specify do
+      expect(subject.smembers('nonexisting')).to eq([])
+    end
+
+    specify do
+      connection.run_command(:SADD, 'myset', 'Hello')
+      connection.run_command(:SADD, 'myset', 'World')
+
+      expect(subject.smembers('myset')).to match_array(['Hello', 'World'])
+    end
+  end
+
+  describe '#srem' do
+    specify do
+      expect(subject.srem(:nonexisting, 'a')).to eq(0)
+    end
+
+    specify do
+      connection.run_command(:SADD, :myset, 'one', 'two', 'three')
+
+      expect(subject.srem(:myset, 'one', 'four')).to eq(1)
+      myset = connection.run_command(:SMEMBERS, :myset)
+      expect(myset).to match_array(['two', 'three'])
     end
   end
 
@@ -648,6 +868,34 @@ RSpec.describe Oxblood::Session do
       cmd = [:ZRANGE, :myzset, 0, -1, 'WITHSCORES']
       result = ['one', '1', 'two', '2', 'three', '3']
       expect(connection.run_command(*cmd)).to eq(result)
+    end
+  end
+
+  describe '#zcard' do
+    specify do
+      expect(subject.zcard('nonexistingkey')).to eq(0)
+    end
+
+    specify do
+      connection.run_command(:ZADD, :myzset, [1, 'one', 2, 'two', 3, 'three'])
+      expect(subject.zcard(:myzset)).to eq(3)
+    end
+  end
+
+  describe '#zrange' do
+    specify do
+      expect(subject.zrange('nonexisting', 0, -1)).to eq([])
+      expect(subject.zrange('nonexisting', 0, -1, withscores: true)).to eq([])
+    end
+
+    specify do
+      connection.run_command(:ZADD, 'zset', 1, 'on', 2, 'tw', 3, 'th')
+      with_scores = ['on', '1', 'tw', '2', 'th', '3']
+
+      expect(subject.zrange('zset', 0, -1)).to match_array(['on', 'tw', 'th'])
+      expect(subject.zrange('zset', 2, 3)).to eq(['th'])
+      expect(subject.zrange('zset', -2, -1)).to eq(['tw', 'th'])
+      expect(subject.zrange('zset', 0, -1, withscores: true)).to eq(with_scores)
     end
   end
 
@@ -683,6 +931,16 @@ RSpec.describe Oxblood::Session do
       expect(subject.zrem(:myzset, 'two')).to eq(1)
       set = connection.run_command(:ZRANGE, :myzset, 0, -1, :WITHSCORES)
       expect(set).to eq(['one', '1', 'three', '3'])
+    end
+  end
+
+  describe '#zremrangebyscore' do
+    specify do
+      connection.run_command(:ZADD, :myzset, [1, 'one', 2, 'two', 3, 'three'])
+
+      expect(subject.zremrangebyscore(:myzset, '-inf', '(2')).to eq(1)
+      myzset = connection.run_command(:ZRANGE, :myzset, 0, -1, :WITHSCORES)
+      expect(myzset).to eq(['two', '2', 'three', '3'])
     end
   end
 end
