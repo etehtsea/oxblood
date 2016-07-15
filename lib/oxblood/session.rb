@@ -492,6 +492,9 @@ module Oxblood
     #
     # @param [String] key under which store set
     # @param [[Float, String], Array<[Float, String]>] args scores and members
+    #
+    # @return [Integer] The number of elements added to the sorted sets, not
+    #   including elements already existing for which the score was updated
     def zadd(key, *args)
       run(*args.unshift(:ZADD, key))
     end
