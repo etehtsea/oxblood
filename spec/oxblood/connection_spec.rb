@@ -5,7 +5,7 @@ RSpec.describe Oxblood::Connection do
   describe '.open' do
     context 'db option' do
       def get_db_index(connection, client_name)
-        db = connection.run_command(:CLIENT, :LIST).split("\n").map do |cl|
+        connection.run_command(:CLIENT, :LIST).split("\n").map do |cl|
           Hash[cl.split(' ').map { |e| e.split('=') }]
         end.find { |cl| cl['name'] == client_name }['db']
       end
