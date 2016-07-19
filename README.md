@@ -13,8 +13,23 @@ An experimental Redis Ruby client.
 - Ruby 2.2.2+
 - JRuby 9k+
 
-## Supported features
+## Status
 
+- Commands:
+  - Cluster (0/20)
+  - Connection (4/5)
+  - Geo (0/6)
+  - Hashes (14/15)
+  - HyperLogLog (0/3)
+  - Keys (18/22)
+  - Lists (6/17)
+  - Pub/Sub (0/6)
+  - Scripting (0/7)
+  - Server (2/31)
+  - Sets (5/15)
+  - Sorted Sets (6/21)
+  - Strings (5/24)
+  - Transaction (0/5)
 - [Pipeling](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Pipeline)
 - [Connection pooling](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Pool)
 
