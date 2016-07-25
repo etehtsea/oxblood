@@ -1,3 +1,4 @@
+require 'socket'
 require 'oxblood/protocol'
 require 'oxblood/buffered_io'
 require 'oxblood/session'
