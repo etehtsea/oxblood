@@ -10,7 +10,7 @@ class Redis
           config = config.dup
           config.delete(:path)
         end
-        connection = ::Oxblood::Connection.open(config)
+        connection = ::Oxblood::Connection.new(config)
 
         new(connection)
       end
@@ -20,15 +20,15 @@ class Redis
       end
 
       def connected?
-        @connection && @connection.connected?
+        @connection.socket && @connection.socket.connected?
       end
 
       def timeout=(timeout)
-        @connection.timeout = timeout > 0 ? timeout : nil
+        @connection.socket.timeout = timeout > 0 ? timeout : nil
       end
 
       def disconnect
-        @connection.close
+        @connection.socket.close
       end
 
       def write(command)

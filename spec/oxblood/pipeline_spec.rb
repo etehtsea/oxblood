@@ -4,7 +4,7 @@ require 'oxblood/connection'
 RSpec.describe Oxblood::Pipeline do
   describe '#sync' do
     let(:connection) do
-      Oxblood::Connection.open
+      Oxblood::Connection.new
     end
 
     subject do

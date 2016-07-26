@@ -16,13 +16,13 @@ module Oxblood
     #
     # @option options [Float] :timeout (1.0) Connection acquisition timeout.
     # @option options [Integer] :size Pool size.
-    # @option options [Hash] :connection see {Connection.open}
+    # @option options [Hash] :connection see {Connection#initialize}
     def initialize(options = {})
       timeout = options.fetch(:timeout, 1.0)
       size = options.fetch(:size)
 
       @pool = ConnectionPool.new(size: size, timeout: timeout) do
-        Connection.open(options.fetch(:connection, {}))
+        Connection.new(options.fetch(:connection, {}))
       end
     end
 

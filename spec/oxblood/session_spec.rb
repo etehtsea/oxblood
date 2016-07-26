@@ -3,7 +3,7 @@ require 'oxblood/connection'
 
 RSpec.describe Oxblood::Session do
   before(:context) do
-    @connection = Oxblood::Connection.open
+    @connection = Oxblood::Connection.new
   end
 
   let(:connection) do
@@ -254,7 +254,7 @@ RSpec.describe Oxblood::Session do
       end
 
       let(:connection) do
-        Oxblood::Connection.open(path: @redis_server.opts[:unixsocket])
+        Oxblood::Connection.new(path: @redis_server.opts[:unixsocket])
       end
 
       subject do
@@ -364,7 +364,7 @@ RSpec.describe Oxblood::Session do
       end
 
       let(:connection) do
-        Oxblood::Connection.open(path: @redis_server.opts[:unixsocket])
+        Oxblood::Connection.new(path: @redis_server.opts[:unixsocket])
       end
 
       subject do

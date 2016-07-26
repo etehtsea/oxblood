@@ -5,7 +5,7 @@ module Oxblood
   #   please use {Pool}
   #
   # @example
-  #   conn = Oxblood::Connection.open
+  #   conn = Oxblood::Connection.new
   #   session = Oxblood::Session.new(conn)
   #   session.ping # => 'PONG'
   class Session
@@ -773,8 +773,7 @@ module Oxblood
     end
 
     def run(*command)
-      @connection.write(serialize(*command))
-      @connection.read_response
+      @connection.run_command(*command)
     end
 
     private

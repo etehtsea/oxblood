@@ -20,7 +20,8 @@ module Oxblood
     # @return [Array] of responses
     def sync
       serialized_commands = @commands.map { |c| serialize(*c) }
-      @connection.write(serialized_commands.join)
+
+      @connection.socket.write(serialized_commands.join)
       @connection.read_responses(@commands.size)
     end
 
