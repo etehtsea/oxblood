@@ -59,9 +59,9 @@ RSpec.describe Oxblood::RSocket do
         socket = double('socket')
         allow(socket).to receive(:read_nonblock).and_raise(IO::EAGAINWaitReadable)
         allow(socket).to receive(:close).and_return(nil)
-        allow(IO).to receive(:select).and_return(false)
         allow(subject).to receive(:socket).and_return(socket)
         allow(subject).to receive(:close).and_call_original
+        allow(IO).to receive(:select).and_return(false)
 
         expect { subject.read(1) }.to raise_error(timeout_error)
         expect(subject).to have_received(:close)
@@ -107,9 +107,9 @@ RSpec.describe Oxblood::RSocket do
         socket = double('socket')
         allow(socket).to receive(:read_nonblock).and_raise(IO::EAGAINWaitReadable)
         allow(socket).to receive(:close).and_return(nil)
-        allow(IO).to receive(:select).and_return(false)
         allow(subject).to receive(:socket).and_return(socket)
         allow(subject).to receive(:close).and_call_original
+        allow(IO).to receive(:select).and_return(false)
 
         expect { subject.gets(sep) }.to raise_error(timeout_error)
         expect(subject).to have_received(:close)
@@ -150,9 +150,9 @@ RSpec.describe Oxblood::RSocket do
         socket = double('socket')
         allow(socket).to receive(:write_nonblock).and_raise(IO::EAGAINWaitWritable)
         allow(socket).to receive(:close).and_return(nil)
-        allow(IO).to receive(:select).and_return(false)
         allow(subject).to receive(:socket).and_return(socket)
         allow(subject).to receive(:close).and_call_original
+        allow(IO).to receive(:select).and_return(false)
 
         expect { subject.write("PING\r\n") }.to raise_error(timeout_error)
         expect(subject).to have_received(:close)
