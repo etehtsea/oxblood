@@ -42,7 +42,7 @@ class Redis
         reply
       rescue ::Oxblood::Protocol::ParserError => e
         raise Redis::ProtocolError.new(e.message)
-      rescue ::Oxblood::Connection::TimeoutError => e
+      rescue ::Oxblood::RSocket::TimeoutError => e
         raise Redis::TimeoutError.new(e.message)
       end
 

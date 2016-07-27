@@ -5,8 +5,6 @@ require 'oxblood/session'
 module Oxblood
   # Class responsible for connection maintenance
   class Connection
-    TimeoutError = Class.new(RuntimeError)
-
     # @!attribute [r] socket
     #   @return [RSocket] resilient socket
     attr_reader :socket
@@ -49,8 +47,8 @@ module Oxblood
     end
 
     # Read response from server
-    # @raise [TimeoutError] if timeout happen
-    # @note Will raise TimeoutError even if there is simply no response to read
+    # @raise [RSocket::TimeoutError] if timeout happen
+    # @note Will raise RSocket::TimeoutError even if there is simply no response to read
     #       from server. For example, if you are trying to read response before
     #       sending command.
     # @todo Raise specific error if server has nothing to answer.

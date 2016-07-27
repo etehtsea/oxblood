@@ -52,7 +52,7 @@ RSpec.describe Oxblood::RSocket do
 
     context 'timeout' do
       let(:timeout_error) do
-        Oxblood::Connection::TimeoutError
+        described_class::TimeoutError
       end
 
       it 'closes socket in case of timeout error' do
@@ -100,7 +100,7 @@ RSpec.describe Oxblood::RSocket do
 
     context 'timeout' do
       let(:timeout_error) do
-        Oxblood::Connection::TimeoutError
+        described_class::TimeoutError
       end
 
       it 'closes socket in case of timeout error' do

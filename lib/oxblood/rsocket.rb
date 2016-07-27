@@ -5,6 +5,8 @@ module Oxblood
   # automatically recreated in case of any errors (including timeout errors)
   # in order to avoid inconsistent state.
   class RSocket
+    TimeoutError = Class.new(RuntimeError)
+
     # @!attribute [rw] timeout
     #   @return [Numeric] timeout in seconds
     attr_accessor :timeout
@@ -103,7 +105,7 @@ module Oxblood
           retry
         else
           close
-          raise Connection::TimeoutError
+          raise TimeoutError
         end
       end
     rescue EOFError
