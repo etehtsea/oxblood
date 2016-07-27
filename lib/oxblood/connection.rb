@@ -13,7 +13,7 @@ module Oxblood
     #
     # @param [Hash] opts Connection options
     #
-    # @option opts [Float] :timeout (1.0) socket read timeout
+    # @option opts [Float] :timeout (1.0) socket read/write timeout
     # @option opts [Integer] :db database number
     # @option opts [String] :password
     #

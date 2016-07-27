@@ -129,4 +129,34 @@ RSpec.describe Oxblood::RSocket do
       end
     end
   end
+
+  describe '#write' do
+    specify do
+      expect(subject.write("PING\r\n")).to eq(6)
+      expect(subject.gets("\r\n")).to eq("+PONG\r\n")
+    end
+
+    specify do
+      expect(subject.write("*2\r\n$4\r\nECHO\r\n$7\r\nабвg\r\n")).to eq(27)
+      expect(subject.read(13)).to eq("$7\r\n\xD0\xB0\xD0\xB1\xD0\xB2g\r\n".b)
+    end
+
+    context 'timeout' do
+      let(:timeout_error) do
+        described_class::TimeoutError
+      end
+
+      it 'closes socket in case of timeout error' do
+        socket = double('socket')
+        allow(socket).to receive(:write_nonblock).and_raise(IO::EAGAINWaitWritable)
+        allow(socket).to receive(:close).and_return(nil)
+        allow(IO).to receive(:select).and_return(false)
+        allow(subject).to receive(:socket).and_return(socket)
+        allow(subject).to receive(:close).and_call_original
+
+        expect { subject.write("PING\r\n") }.to raise_error(timeout_error)
+        expect(subject).to have_received(:close)
+      end
+    end
+  end
 end

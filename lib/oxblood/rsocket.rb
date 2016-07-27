@@ -15,7 +15,7 @@ module Oxblood
     #
     # @param [Hash] opts Connection options
     #
-    # @option opts [Float] :timeout (1.0) socket read timeout
+    # @option opts [Float] :timeout (1.0) socket read/write timeout
     #
     # @option opts [String] :host ('localhost') Hostname or IP address to connect to
     # @option opts [Integer] :port (6379) Port Redis server listens on
@@ -54,10 +54,27 @@ module Oxblood
     end
 
     # Write data to socket
-    # @param [#to_s] data given
+    # @param [String] data given
     # @return [Integer] the number of bytes written
     def write(data)
-      socket.write(data)
+      full_size = data.bytesize
+
+      while data.bytesize > 0
+        begin
+          written = socket.write_nonblock(data)
+        rescue IO::WaitWritable, Errno::EINTR
+          if IO.select(nil, [socket], nil, @timeout)
+            retry
+          else
+            close
+            raise TimeoutError
+          end
+        end
+
+        data = data.byteslice(written..-1)
+      end
+
+      full_size
     end
 
     # Close connection to server
