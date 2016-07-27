@@ -34,7 +34,7 @@ An experimental Redis Ruby client.
 - [Connection pooling](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Pool)
 
 ## Usage
-As a starting point please look at [Oxblood::Pool](file:///Users/kes/Projects/redis/oxblood/doc/Oxblood/Pool.html) documentation.
+As a starting point please look at [Oxblood::Pool](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Pool) documentation.
 
 ## Documentation
 Documentation and usage examples are available on [Rubydoc](http://rubydoc.info/github/etehtsea/oxblood/master/frames).
