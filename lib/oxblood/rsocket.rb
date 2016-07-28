@@ -1,3 +1,4 @@
+require 'io/wait'
 require 'socket'
 
 module Oxblood
@@ -60,18 +61,13 @@ module Oxblood
       full_size = data.bytesize
 
       while data.bytesize > 0
-        begin
-          written = socket.write_nonblock(data)
-        rescue IO::WaitWritable, Errno::EINTR
-          if IO.select(nil, [socket], nil, @timeout)
-            retry
-          else
-            close
-            raise TimeoutError
-          end
-        end
+        written = socket.write_nonblock(data, exception: false)
 
-        data = data.byteslice(written..-1)
+        if written == :wait_writable
+          socket.wait_writable(@timeout) or fail_with_timeout!
+        else
+          data = data.byteslice(written..-1)
+        end
       end
 
       full_size
@@ -115,19 +111,21 @@ module Oxblood
     end
 
     def readpartial(nbytes)
-      begin
-        socket.read_nonblock(nbytes)
-      rescue IO::WaitReadable, Errno::EINTR
-        if IO.select([socket], nil, nil, @timeout)
-          retry
-        else
-          close
-          raise TimeoutError
-        end
-      end
-    rescue EOFError
+      case data = socket.read_nonblock(nbytes, exception: false)
+      when String
+        return data
+      when :wait_readable
+        socket.wait_readable(@timeout) or fail_with_timeout!
+      when nil
+        close
+        raise Errno::ECONNRESET
+      end while true
+    end
+
+
+    def fail_with_timeout!
       close
-      raise Errno::ECONNRESET
+      raise TimeoutError
     end
   end
 end

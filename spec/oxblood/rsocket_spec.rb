@@ -57,11 +57,11 @@ RSpec.describe Oxblood::RSocket do
 
       it 'closes socket in case of timeout error' do
         socket = double('socket')
-        allow(socket).to receive(:read_nonblock).and_raise(IO::EAGAINWaitReadable)
+        allow(socket).to receive(:read_nonblock).and_return(:wait_readable)
         allow(socket).to receive(:close).and_return(nil)
+        allow(socket).to receive(:wait_readable).and_return(false)
         allow(subject).to receive(:socket).and_return(socket)
         allow(subject).to receive(:close).and_call_original
-        allow(IO).to receive(:select).and_return(false)
 
         expect { subject.read(1) }.to raise_error(timeout_error)
         expect(subject).to have_received(:close)
@@ -76,7 +76,7 @@ RSpec.describe Oxblood::RSocket do
     context 'eof' do
       specify do
         socket = double('socket')
-        allow(socket).to receive(:read_nonblock).and_raise(EOFError)
+        allow(socket).to receive(:read_nonblock).and_return(nil)
         allow(socket).to receive(:close).and_return(nil)
         allow(subject).to receive(:socket).and_return(socket)
         allow(subject).to receive(:close).and_call_original
@@ -105,11 +105,11 @@ RSpec.describe Oxblood::RSocket do
 
       it 'closes socket in case of timeout error' do
         socket = double('socket')
-        allow(socket).to receive(:read_nonblock).and_raise(IO::EAGAINWaitReadable)
+        allow(socket).to receive(:read_nonblock).and_return(:wait_readable)
         allow(socket).to receive(:close).and_return(nil)
+        allow(socket).to receive(:wait_readable).and_return(false)
         allow(subject).to receive(:socket).and_return(socket)
         allow(subject).to receive(:close).and_call_original
-        allow(IO).to receive(:select).and_return(false)
 
         expect { subject.gets(sep) }.to raise_error(timeout_error)
         expect(subject).to have_received(:close)
@@ -119,7 +119,7 @@ RSpec.describe Oxblood::RSocket do
     context 'eof' do
       specify do
         socket = double('socket')
-        allow(socket).to receive(:read_nonblock).and_raise(EOFError)
+        allow(socket).to receive(:read_nonblock).and_return(nil)
         allow(socket).to receive(:close).and_return(nil)
         allow(subject).to receive(:socket).and_return(socket)
         allow(subject).to receive(:close).and_call_original
@@ -148,11 +148,11 @@ RSpec.describe Oxblood::RSocket do
 
       it 'closes socket in case of timeout error' do
         socket = double('socket')
-        allow(socket).to receive(:write_nonblock).and_raise(IO::EAGAINWaitWritable)
+        allow(socket).to receive(:write_nonblock).and_return(:wait_writable)
         allow(socket).to receive(:close).and_return(nil)
+        allow(socket).to receive(:wait_writable).and_return(false)
         allow(subject).to receive(:socket).and_return(socket)
         allow(subject).to receive(:close).and_call_original
-        allow(IO).to receive(:select).and_return(false)
 
         expect { subject.write("PING\r\n") }.to raise_error(timeout_error)
         expect(subject).to have_received(:close)
