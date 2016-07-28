@@ -124,6 +124,8 @@ module Oxblood
 
 
     def fail_with_timeout!
+      # In case of failure close socket ASAP
+      socket.setsockopt(Socket::Option.linger(true, 0))
       close
       raise TimeoutError
     end
