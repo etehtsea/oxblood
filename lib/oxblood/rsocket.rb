@@ -8,6 +8,14 @@ module Oxblood
   class RSocket
     TimeoutError = Class.new(RuntimeError)
 
+    # JRuby don't properly support SO_LINGER setting
+    LINGER_OPTION = if RUBY_ENGINE == 'jruby'
+                      [Socket::SOL_SOCKET, :LINGER, 0].freeze
+                    else
+                      Socket::Option.linger(true, 0)
+                    end
+    private_constant :LINGER_OPTION
+
     # @!attribute [rw] timeout
     #   @return [Numeric] timeout in seconds
     attr_accessor :timeout
@@ -125,7 +133,7 @@ module Oxblood
 
     def fail_with_timeout!
       # In case of failure close socket ASAP
-      socket.setsockopt(Socket::Option.linger(true, 0))
+      socket.setsockopt(*LINGER_OPTION)
       close
       raise TimeoutError
     end
