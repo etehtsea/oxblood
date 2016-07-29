@@ -9,6 +9,7 @@ module Oxblood
     TimeoutError = Class.new(RuntimeError)
 
     # JRuby don't properly support SO_LINGER setting
+    # @see https://github.com/jruby/jruby/issues/4040
     LINGER_OPTION = if RUBY_ENGINE == 'jruby'
                       [Socket::SOL_SOCKET, :LINGER, 0].freeze
                     else
