@@ -86,15 +86,15 @@ module Oxblood
     # @return [nil] always return nil
     def close
       @buffer.clear
-      socket.close
+      @socket && @socket.close
     rescue IOError
       ;
     ensure
       @socket = nil
     end
 
-    # True if connection is established
-    # @return [Boolean] connection status
+    # True if socket exists
+    # @return [Boolean] socket exists or not
     def connected?
       !!@socket
     end

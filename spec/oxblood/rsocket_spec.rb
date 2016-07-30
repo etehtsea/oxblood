@@ -24,6 +24,15 @@ RSpec.describe Oxblood::RSocket do
       subject.instance_variable_get(:@socket).close
       expect(subject.close).to be_nil
     end
+
+    it 'do not create new socket to close if called twice' do
+      subject.close
+      expect(subject.instance_variable_get(:@socket)).to be_nil
+
+      allow(subject).to receive(:socket).and_call_original
+      subject.close
+      expect(subject).not_to have_received(:socket)
+    end
   end
 
   describe '#connected?' do
