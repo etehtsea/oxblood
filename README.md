@@ -26,7 +26,7 @@ An experimental Redis Ruby client.
   - Pub/Sub (0/6)
   - Scripting (0/7)
   - Server (2/31)
-  - Sets (5/15)
+  - Sets (14/15)
   - Sorted Sets (6/21)
   - Strings (5/24)
   - Transaction (0/5)

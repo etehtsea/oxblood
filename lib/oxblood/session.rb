@@ -638,6 +638,60 @@ module Oxblood
       run(:SCARD, key)
     end
 
+    # Subtract multiple sets
+    # @see http://redis.io/commands/sdiff
+    #
+    # @param [String, Array<String>] keys
+    #
+    # @return [Array] array with members of the resulting set
+    def sdiff(*keys)
+      run(*keys.unshift(:SDIFF))
+    end
+
+    # Subtract multiple sets and store the resulting set in a key
+    # @see http://redis.io/commands/sdiffstore
+    #
+    # @param [String] destination key
+    # @param [String, Array<String>] keys of sets to diff
+    #
+    # @return [Integer] the number of elements in the resulting set
+    def sdiffstore(destination, *keys)
+      run(*keys.unshift(:SDIFFSTORE, destination))
+    end
+
+    # Intersect multiple sets
+    # @see http://redis.io/commands/sinter
+    #
+    # @param [String, Array<String>] keys to intersect
+    #
+    # @return [Array] array with members of the resulting set
+    def sinter(*keys)
+      run(*keys.unshift(:SINTER))
+    end
+
+    # Intersect multiple sets and store the resulting key in a key
+    # @see http://redis.io/commands/sinterstore
+    #
+    # @param [String] destination key
+    # @param [String, Array<String>] keys of sets to intersect
+    #
+    # @return [Integer] the number of elements in the resulting set
+    def sinterstore(destination, *keys)
+      run(*keys.unshift(:SINTERSTORE, destination))
+    end
+
+    # Determine if a given value is a member of a set
+    # @see http://redis.io/commands/sismember
+    #
+    # @param [String] key
+    # @param [String] member
+    #
+    # @return [Integer] 1 if the element is a member of the set or
+    #   0 if the element is not a member of the set, or if key does not exist
+    def sismember(key, member)
+      run(:SISMEMBER, key, member)
+    end
+
     # Get all the members in a set
     # @see http://redis.io/commands/smembers
     #
@@ -646,6 +700,53 @@ module Oxblood
     # @return [Array] all elements of the set
     def smembers(key)
       run(:SMEMBERS, key)
+    end
+
+    # Move a member from one set to another
+    # @see http://redis.io/commands/smove
+    #
+    # @param [String] source
+    # @param [String] destination
+    # @param [String] member
+    #
+    # @return [Integer] 1 if the element is moved, or 0 if the element is not
+    #   a member of source and no operation was performed
+    def smove(source, destination, member)
+      run(:SMOVE, source, destination, member)
+    end
+
+    # Remove and return one or multiple random members from a set
+    # @see http://redis.io/commands/spop
+    #
+    # @param [String] key
+    # @param [Integer] count
+    #
+    # @return [String] without the additional count argument the command returns
+    #   the removed element, or nil when key does not exist
+    # @return [Array] when the additional count argument is passed the command
+    #   returns an array of removed elements, or an empty array when key does
+    #   not exist.
+    def spop(key, count = nil)
+      args = [:SPOP, key]
+      args << count if count
+      run(*args)
+    end
+
+    # Get one or multiple random members from a set
+    # @see http://redis.io/commands/srandmember
+    #
+    # @param [String] key
+    # @param [Integer] count
+    #
+    # @return [String, nil] without the additional count argument the command
+    #   returns string with the randomly selected element, or nil when key
+    #   does not exist
+    # @return [Array] when the additional count argument is passed the command
+    #   returns an array of elements, or an empty array when key does not exist
+    def srandmember(key, count = nil)
+      args = [:SRANDMEMBER, key]
+      args << count if count
+      run(*args)
     end
 
     # Remove one or more members from a set
@@ -668,6 +769,17 @@ module Oxblood
     # @return [Array] list with members of the resulting set
     def sunion(*keys)
       run(*keys.unshift(:SUNION))
+    end
+
+    # Add multipe sets and store the resulting set in a key
+    # @see http://redis.io/commands/sunionstore
+    #
+    # @param [String] destination
+    # @param [String, Array<String>] keys
+    #
+    # @return [Integer] the number of elements in the resulting set
+    def sunionstore(destination, *keys)
+      run(*keys.unshift(:SUNIONSTORE, destination))
     end
 
     #
