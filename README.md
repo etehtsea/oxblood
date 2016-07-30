@@ -17,7 +17,7 @@ An experimental Redis Ruby client.
 
 - Commands:
   - Cluster (0/20)
-  - Connection (4/5)
+  - Connection
   - Geo (0/6)
   - Hashes (14/15)
   - HyperLogLog (0/3)

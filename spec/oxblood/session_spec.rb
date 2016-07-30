@@ -281,6 +281,16 @@ RSpec.describe Oxblood::Session do
     end
   end
 
+  describe '#quit' do
+    specify do
+      conn = Oxblood::Connection.new
+      session = described_class.new(conn)
+
+      expect(session.quit).to eq('OK')
+      expect(conn.socket.connected?).to eq(false)
+    end
+  end
+
   describe '#get' do
     specify do
       expect(subject.get(:nonexisting)).to eq(nil)

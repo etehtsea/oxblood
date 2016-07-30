@@ -304,6 +304,16 @@ module Oxblood
       run(:SELECT, index)
     end
 
+    # Close the connection
+    # @see http://redis.io/commands/quit
+    #
+    # @return [String] 'OK'
+    def quit
+      run(:QUIT)
+    ensure
+      @connection.socket.close
+    end
+
     #
     # Server
     #
