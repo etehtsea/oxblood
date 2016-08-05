@@ -1165,6 +1165,33 @@ RSpec.describe Oxblood::Session do
     end
   end
 
+  describe '#zcount' do
+    specify do
+      connection.run_command(:ZADD, :zset, [1, 'one', 2, 'two', 3, 'three'])
+
+      expect(subject.zcount(:zset, '-inf', '+inf')).to eq(3)
+      expect(subject.zcount(:zset, '(1', '3')).to eq(2)
+    end
+  end
+
+  describe '#zincrby' do
+    specify do
+      connection.run_command(:ZADD, :zset, [1, 'one', 2, 'two'])
+
+      expect(subject.zincrby(:zset, 2, 'one')).to eq('3')
+      expect(subject.zincrby(:anotherset, 5.46, 'two')).to eq('5.46')
+    end
+  end
+
+  describe '#zlexcount' do
+    specify do
+      connection.run_command(:ZADD, :myzset, %w(0 a 0 b 0 c 0 d 0 e 0 f 0 g))
+
+      expect(subject.zlexcount(:myzset, '-', '+')).to eq(7)
+      expect(subject.zlexcount(:myzset, '[b', '[f')).to eq(5)
+    end
+  end
+
   describe '#zrange' do
     specify do
       expect(subject.zrange('nonexisting', 0, -1)).to eq([])
@@ -1184,13 +1211,25 @@ RSpec.describe Oxblood::Session do
 
   describe '#zrangebyscore' do
     specify do
+      connection.run_command(:ZADD, :z, %w(1 one 2 two 3 three))
+
+      expect(subject.zrangebyscore(:z, '-inf', '+inf')).to eq(%w(one two three))
+      expect(subject.zrangebyscore(:z, 1, 2)).to eq(%w(one two))
+      expect(subject.zrangebyscore(:z, '(1', 2)).to eq(%w(two))
+      expect(subject.zrangebyscore(:z, '(1', '(2')).to eq([])
+      expect(subject.zrangebyscore(:z, '(1', 2, withscores: true)).to eq(%w(two 2))
+      expect(subject.zrangebyscore(:z, '-inf', '+inf', limit: [1, 1])).to eq(%w(two))
+      opts = { withscores: true, limit: [1, 1] }
+      expect(subject.zrangebyscore(:z, '-inf', '+inf', opts)).to eq(%w(two 2))
+    end
+  end
+
+  describe '#zrank' do
+    specify do
       connection.run_command(:ZADD, :myzset, [1, 'one', 2, 'two', 3, 'three'])
 
-      members = ['one', 'two', 'three']
-      expect(subject.zrangebyscore(:myzset, '-inf', '+inf')).to eq(members)
-      expect(subject.zrangebyscore(:myzset, 1, 2)).to eq(['one', 'two'])
-      expect(subject.zrangebyscore(:myzset, '(1', 2)).to eq(['two'])
-      expect(subject.zrangebyscore(:myzset, '(1', '(2')).to eq([])
+      expect(subject.zrank(:myzset, 'three')).to eq(2)
+      expect(subject.zrank(:myzset, 'four')).to be_nil
     end
   end
 
@@ -1217,6 +1256,14 @@ RSpec.describe Oxblood::Session do
     end
   end
 
+  describe '#zremrangebyrank' do
+    specify do
+      connection.run_command(:ZADD, :myzset, [1, 'one', 2, 'two', 3, 'three'])
+
+      expect(subject.zremrangebyrank(:myzset, 0, 1)).to eq(2)
+    end
+  end
+
   describe '#zremrangebyscore' do
     specify do
       connection.run_command(:ZADD, :myzset, [1, 'one', 2, 'two', 3, 'three'])
@@ -1224,6 +1271,56 @@ RSpec.describe Oxblood::Session do
       expect(subject.zremrangebyscore(:myzset, '-inf', '(2')).to eq(1)
       myzset = connection.run_command(:ZRANGE, :myzset, 0, -1, :WITHSCORES)
       expect(myzset).to eq(['two', '2', 'three', '3'])
+    end
+  end
+
+  describe '#zrevrange' do
+    specify do
+      expect(subject.zrevrange('nonexisting', 0, -1)).to eq([])
+      expect(subject.zrevrange('nonexisting', 0, -1, withscores: true)).to eq([])
+    end
+
+    specify do
+      connection.run_command(:ZADD, 'zset', 1, 'on', 2, 'tw', 3, 'th')
+      with_scores = %w(th 3 tw 2 on 1)
+
+      expect(subject.zrevrange('zset', 0, -1)).to match_array(%w(th tw on))
+      expect(subject.zrevrange('zset', 2, 3)).to eq(%w(on))
+      expect(subject.zrevrange('zset', -2, -1)).to eq(%w(tw on))
+      expect(subject.zrevrange('zset', 0, -1, withscores: true)).to eq(with_scores)
+    end
+  end
+
+  describe '#zrevrangebyscore' do
+    specify do
+      connection.run_command(:ZADD, :z, [1, 'one', 2, 'two', 3, 'three'])
+
+      members = %w(three two one)
+      expect(subject.zrevrangebyscore(:z, '+inf', '-inf')).to eq(members)
+      expect(subject.zrevrangebyscore(:z, 2, 1)).to eq(%w(two one))
+      expect(subject.zrevrangebyscore(:z, 2, '(1')).to eq(%w(two))
+      expect(subject.zrevrangebyscore(:z, '(2', '(1')).to eq([])
+      expect(subject.zrevrangebyscore(:z, 2, '(1', withscores: true)).to eq(%w(two 2))
+      expect(subject.zrevrangebyscore(:z, '+inf', '-inf', limit: [1, 1])).to eq(%w(two))
+      opts = { withscores: true, limit: [1, 1] }
+      expect(subject.zrevrangebyscore(:z, '+inf', '-inf', opts)).to eq(%w(two 2))
+    end
+  end
+
+  describe '#zrevrank' do
+    specify do
+      connection.run_command(:ZADD, :myzset, [1, 'one', 2, 'two', 3, 'three'])
+
+      expect(subject.zrevrank(:myzset, 'one')).to eq(2)
+      expect(subject.zrevrank(:myzset, 'four')).to be_nil
+    end
+  end
+
+  describe '#zscore' do
+    specify do
+      connection.run_command(:ZADD, :myzset, [1, 'one'])
+
+      expect(subject.zscore(:myzset, 'one')).to eq('1')
     end
   end
 end

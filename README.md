@@ -27,7 +27,7 @@ An experimental Redis Ruby client.
   - Scripting (0/7)
   - Server (2/31)
   - Sets (14/15) (See [#10](https://github.com/etehtsea/oxblood/issues/10))
-  - Sorted Sets (6/21)
+  - Sorted Sets (15/21) (See [#12], [#13], [#14], [#15])
   - Strings (5/24)
   - Transaction (0/5)
 - [Pipeling](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Pipeline)
@@ -56,3 +56,7 @@ The gem is available as open source under the terms of the [MIT License](http://
 [#6]: https://github.com/etehtsea/oxblood/issues/6
 [#7]: https://github.com/etehtsea/oxblood/issues/7
 [#8]: https://github.com/etehtsea/oxblood/issues/8
+[#12]: https://github.com/etehtsea/oxblood/issues/12
+[#13]: https://github.com/etehtsea/oxblood/issues/13
+[#14]: https://github.com/etehtsea/oxblood/issues/14
+[#15]: https://github.com/etehtsea/oxblood/issues/15
