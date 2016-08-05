@@ -1,11 +1,4 @@
-require 'oxblood/commands/hashes'
-require 'oxblood/commands/strings'
-require 'oxblood/commands/connection'
-require 'oxblood/commands/server'
-require 'oxblood/commands/keys'
-require 'oxblood/commands/lists'
-require 'oxblood/commands/sets'
-require 'oxblood/commands/sorted_sets'
+require 'oxblood/commands'
 
 module Oxblood
   # Implements usual Request/Response protocol
@@ -18,24 +11,13 @@ module Oxblood
   #   session = Oxblood::Session.new(conn)
   #   session.ping # => 'PONG'
   class Session
+    include Oxblood::Commands
+
     def initialize(connection)
       @connection = connection
     end
 
-    include Commands::Hashes
-    include Commands::Strings
-    include Commands::Connection
-    include Commands::Server
-    include Commands::Keys
-    include Commands::Lists
-    include Commands::Sets
-    include Commands::SortedSets
-
-    protected
-
-    def serialize(*command)
-      Protocol.build_command(*command)
-    end
+    private
 
     def run(*command)
       @connection.run_command(*command)

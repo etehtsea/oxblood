@@ -1,4 +1,5 @@
-require 'oxblood/session'
+require 'oxblood/protocol'
+require 'oxblood/commands'
 
 module Oxblood
   # Redis pipeling class. Commands won't be send until {#sync} is called.
@@ -10,16 +11,20 @@ module Oxblood
   #   pipeline.ping
   #   pipeline.echo('!')
   #   pipeline.sync # => ["ping", "PONG", "!"]
-  class Pipeline < Session
+  class Pipeline
+    include Oxblood::Commands
+
     def initialize(connection)
-      super
+      @connection = connection
       @commands = Array.new
     end
 
     # Sends all commands at once and reads responses
     # @return [Array] of responses
     def sync
-      serialized_commands = @commands.map { |c| serialize(*c) }
+      serialized_commands = @commands.map do |c|
+        Oxblood::Protocol.build_command(*c)
+      end
 
       @connection.socket.write(serialized_commands.join)
       @connection.read_responses(@commands.size)
