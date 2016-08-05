@@ -22,7 +22,7 @@ An experimental Redis Ruby client.
   - Hashes (14/15)
   - HyperLogLog (0/3)
   - Keys (18/22)
-  - Lists (6/17)
+  - Lists (14/17) [See #11](https://github.com/etehtsea/oxblood/issues/11)
   - Pub/Sub (0/6)
   - Scripting (0/7)
   - Server (2/31)
