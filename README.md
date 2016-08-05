@@ -28,7 +28,7 @@ An experimental Redis Ruby client.
   - Server (2/31)
   - Sets (14/15) (See [#10](https://github.com/etehtsea/oxblood/issues/10))
   - Sorted Sets (15/21) (See [#12], [#13], [#14], [#15])
-  - Strings (5/24)
+  - Strings (23/24) (See [#16](https://github.com/etehtsea/oxblood/issues/16))
   - Transaction (0/5)
 - [Pipeling](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Pipeline)
 - [Connection pooling](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Pool)
