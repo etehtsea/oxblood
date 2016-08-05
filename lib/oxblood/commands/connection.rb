@@ -64,7 +64,7 @@ module Oxblood
       def quit
         run(:QUIT)
       ensure
-        @connection.socket.close
+        connection.socket.close
       end
 
       private

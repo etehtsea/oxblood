@@ -1,7 +1,25 @@
-require 'oxblood/session'
+require 'oxblood/commands'
 require 'oxblood/connection'
 
-RSpec.describe Oxblood::Session do
+RSpec.describe Oxblood::Commands do
+  class TestSession
+    include Oxblood::Commands
+
+    def initialize(conn)
+      @conn = conn
+    end
+
+    private
+
+    def run(*command)
+      @conn.run_command(*command)
+    end
+
+    def connection
+      @conn
+    end
+  end
+
   before(:context) do
     @connection = Oxblood::Connection.new
   end
@@ -11,7 +29,7 @@ RSpec.describe Oxblood::Session do
   end
 
   subject do
-    described_class.new(connection)
+    TestSession.new(connection)
   end
 
   after do
@@ -258,7 +276,7 @@ RSpec.describe Oxblood::Session do
       end
 
       subject do
-        described_class.new(connection)
+        TestSession.new(connection)
       end
 
       specify do
@@ -284,7 +302,7 @@ RSpec.describe Oxblood::Session do
   describe '#quit' do
     specify do
       conn = Oxblood::Connection.new
-      session = described_class.new(conn)
+      session = TestSession.new(conn)
 
       expect(session.quit).to eq('OK')
       expect(conn.socket.connected?).to eq(false)
@@ -562,7 +580,7 @@ RSpec.describe Oxblood::Session do
       end
 
       subject do
-        described_class.new(connection)
+        TestSession.new(connection)
       end
 
       specify do
