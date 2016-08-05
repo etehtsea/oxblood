@@ -19,14 +19,14 @@ An experimental Redis Ruby client.
   - Cluster (0/20)
   - Connection
   - Geo (0/6)
-  - Hashes (14/15)
+  - Hashes (14/15) (See [#3](https://github.com/etehtsea/oxblood/issues/3))
   - HyperLogLog (0/3)
-  - Keys (18/22)
-  - Lists (14/17) [See #11](https://github.com/etehtsea/oxblood/issues/11)
+  - Keys (18/22) (See [#4], [#6], [#7], [#8])
+  - Lists (14/17) (See [#11](https://github.com/etehtsea/oxblood/issues/11))
   - Pub/Sub (0/6)
   - Scripting (0/7)
   - Server (2/31)
-  - Sets (14/15)
+  - Sets (14/15) (See [#10](https://github.com/etehtsea/oxblood/issues/10))
   - Sorted Sets (6/21)
   - Strings (5/24)
   - Transaction (0/5)
@@ -51,3 +51,8 @@ Bug reports and pull requests are welcome on [GitHub](https://github.com/etehtse
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+
+[#4]: https://github.com/etehtsea/oxblood/issues/4
+[#6]: https://github.com/etehtsea/oxblood/issues/6
+[#7]: https://github.com/etehtsea/oxblood/issues/7
+[#8]: https://github.com/etehtsea/oxblood/issues/8
