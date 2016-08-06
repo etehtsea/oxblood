@@ -88,9 +88,7 @@ module Oxblood
       # @return [Array] list of elements in the specified range (optionally with
       #   their scores, in case the :withscores option is given)
       def zrange(key, start, stop, opts = {})
-        args = [:ZRANGE, key, start, stop]
-        args << :WITHSCORES if opts[:withscores]
-        run(*args)
+        common_range(:ZRANGE, key, start, stop, opts)
       end
 
       # Return a range of members in a sorted set, by score
@@ -122,11 +120,7 @@ module Oxblood
       # @return [Array] list of elements in the specified score range (optionally
       #   with their scores, in case the :withscores option is given)
       def zrangebyscore(key, min, max, opts = {})
-        args = [:ZRANGEBYSCORE, key, min, max]
-        args << :WITHSCORES if opts[:withscores]
-        args.push(:LIMIT).concat(opts[:limit]) if opts[:limit].is_a?(Array)
-
-        run(*args)
+        common_rangebyscore(:ZRANGEBYSCORE, key, min, max, opts)
       end
 
       # Determine the index of a member in a sorted set
@@ -200,9 +194,7 @@ module Oxblood
       # @return [Array] list of elements in the specified range (optionally with
       #   their scores, in case the :withscores option is given)
       def zrevrange(key, start, stop, opts = {})
-        args = [:ZREVRANGE, key, start, stop]
-        args << :WITHSCORES if opts[:withscores]
-        run(*args)
+        common_range(:ZREVRANGE, key, start, stop, opts)
       end
 
       # Return a range of members in a sorted set, by score, with scores ordered
@@ -235,11 +227,7 @@ module Oxblood
       # @return [Array] list of elements in the specified score range (optionally
       #   with their scores, in case the :withscores option is given)
       def zrevrangebyscore(key, min, max, opts = {})
-        args = [:ZREVRANGEBYSCORE, key, min, max]
-        args << :WITHSCORES if opts[:withscores]
-        args.push(:LIMIT).concat(opts[:limit]) if opts[:limit].is_a?(Array)
-
-        run(*args)
+        common_rangebyscore(:ZREVRANGEBYSCORE, key, min, max, opts)
       end
 
       # Determine the index of a member in a sorted set, with scores ordered from
@@ -266,6 +254,22 @@ module Oxblood
       # the sorted set, or key does not exists
       def zscore(key, member)
         run(:ZSCORE, key, member)
+      end
+
+      private
+
+      def common_rangebyscore(command_name, key, min, max, opts)
+        args = [command_name, key, min, max]
+        args << :WITHSCORES if opts[:withscores]
+        args.push(:LIMIT).concat(opts[:limit]) if opts[:limit].is_a?(Array)
+
+        run(*args)
+      end
+
+      def common_range(command_name, key, start, stop, opts)
+        args = [command_name, key, start, stop]
+        args << :WITHSCORES if opts[:withscores]
+        run(*args)
       end
     end
   end
