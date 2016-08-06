@@ -9,13 +9,13 @@ require 'oxblood/commands/sorted_sets'
 
 module Oxblood
   module Commands
-    include Commands::Hashes
-    include Commands::Strings
-    include Commands::Connection
-    include Commands::Server
-    include Commands::Keys
-    include Commands::Lists
-    include Commands::Sets
-    include Commands::SortedSets
+    include Hashes
+    include Strings
+    include Connection
+    include Server
+    include Keys
+    include Lists
+    include Sets
+    include SortedSets
   end
 end
