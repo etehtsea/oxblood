@@ -3,6 +3,69 @@ require 'oxblood/commands/lists'
 RSpec.describe Oxblood::Commands::Lists do
   include_context 'test session'
 
+  describe '#blpop' do
+    specify do
+      connection.run_command(:RPUSH, :l2, 'a', 'b', 'c')
+
+      expect(subject.blpop(:l1, :l2, 0)).to eq(%w(l2 a))
+    end
+
+    specify do
+      connection.socket.timeout = 3
+      expect(subject.blpop(:l1, 1)).to be_nil
+    end
+
+    specify do
+      connection.run_command(:LPUSH, :l1, 'a')
+      connection.socket.timeout = 3
+
+      subject.blpop(:l1, 10)
+      expect(connection.socket.timeout).to eq(3)
+    end
+  end
+
+  describe '#brpop' do
+    specify do
+      connection.run_command(:RPUSH, :l2, 'a', 'b', 'c')
+
+      expect(subject.brpop(:l1, :l2, 0)).to eq(%w(l2 c))
+    end
+
+    specify do
+      connection.socket.timeout = 3
+      expect(subject.brpop(:l1, 1)).to be_nil
+    end
+
+    specify do
+      connection.run_command(:LPUSH, :l1, 'a')
+      connection.socket.timeout = 3
+
+      subject.brpop(:l1, 10)
+      expect(connection.socket.timeout).to eq(3)
+    end
+  end
+
+  describe '#brpoplpush' do
+    specify do
+      connection.run_command(:LPUSH, :source, 'a', 'b', 'c')
+
+      expect(subject.brpoplpush(:source, :dest, 0)).to eq('a')
+    end
+
+    specify do
+      connection.socket.timeout = 3
+      expect(subject.brpoplpush(:source, :dest, 1)).to be_nil
+    end
+
+    specify do
+      connection.run_command(:LPUSH, :source, 'a')
+      connection.socket.timeout = 3
+
+      subject.brpoplpush(:source, :dest, 10)
+      expect(connection.socket.timeout).to eq(3)
+    end
+  end
+
   describe '#lindex' do
     specify do
       expect(subject.lindex('none', 0)).to be_nil
