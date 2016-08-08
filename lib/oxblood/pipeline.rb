@@ -16,6 +16,8 @@ module Oxblood
   class Pipeline
     include Oxblood::Commands
 
+    attr_reader :connection
+
     def initialize(connection)
       @connection = connection
       @commands = Array.new
