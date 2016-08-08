@@ -42,11 +42,11 @@ module Oxblood
     # Read number of bytes
     # @param [Integer] nbytes number of bytes to read
     # @return [String] read result
-    def read(nbytes)
+    def read(nbytes, timeout = @timeout)
       result = @buffer.slice!(0, nbytes)
 
       while result.bytesize < nbytes
-        result << readpartial(nbytes - result.bytesize)
+        result << readpartial(nbytes - result.bytesize, timeout)
       end
 
       result
@@ -55,9 +55,9 @@ module Oxblood
     # Read until separator
     # @param [String] separator separator
     # @return [String] read result
-    def gets(separator)
+    def gets(separator, timeout = @timeout)
       while (crlf = @buffer.index(separator)).nil?
-        @buffer << readpartial(1024)
+        @buffer << readpartial(1024, timeout)
       end
 
       @buffer.slice!(0, crlf + separator.bytesize)
@@ -66,14 +66,14 @@ module Oxblood
     # Write data to socket
     # @param [String] data given
     # @return [Integer] the number of bytes written
-    def write(data)
+    def write(data, timeout = @timeout)
       full_size = data.bytesize
 
       while data.bytesize > 0
         written = socket.write_nonblock(data, exception: false)
 
         if written == :wait_writable
-          socket.wait_writable(@timeout) or fail_with_timeout!
+          socket.wait_writable(timeout) or fail_with_timeout!
         else
           data = data.byteslice(written..-1)
         end
@@ -119,12 +119,12 @@ module Oxblood
       end
     end
 
-    def readpartial(nbytes)
+    def readpartial(nbytes, timeout)
       case data = socket.read_nonblock(nbytes, exception: false)
       when String
         return data
       when :wait_readable
-        socket.wait_readable(@timeout) or fail_with_timeout!
+        socket.wait_readable(timeout) or fail_with_timeout!
       when nil
         close
         raise Errno::ECONNRESET

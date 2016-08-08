@@ -79,6 +79,17 @@ RSpec.describe Oxblood::RSocket do
         subject.timeout = 0.1
         expect { subject.read(42) }.to raise_error(timeout_error)
       end
+
+      it 'accepts timeout as argument' do
+        timeout = 123
+        methods = { read_nonblock: :wait_readable, wait_readable: false }
+        socket = double('socket', methods).as_null_object
+        allow(subject).to receive(:socket).and_return(socket)
+
+        subject.read(1, timeout) rescue Oxblood::RSocket::TimeoutError
+
+        expect(socket).to have_received(:wait_readable).with(timeout)
+      end
     end
 
     context 'eof' do
@@ -120,6 +131,17 @@ RSpec.describe Oxblood::RSocket do
         expect { subject.gets(sep) }.to raise_error(timeout_error)
         expect(subject).to have_received(:close)
       end
+
+      it 'accepts timeout as argument' do
+        timeout = 123
+        methods = { read_nonblock: :wait_readable, wait_readable: false }
+        socket = double('socket', methods).as_null_object
+        allow(subject).to receive(:socket).and_return(socket)
+
+        subject.gets("\r\n", timeout) rescue Oxblood::RSocket::TimeoutError
+
+        expect(socket).to have_received(:wait_readable).with(timeout)
+      end
     end
 
     context 'eof' do
@@ -160,6 +182,17 @@ RSpec.describe Oxblood::RSocket do
 
         expect { subject.write("PING\r\n") }.to raise_error(timeout_error)
         expect(subject).to have_received(:close)
+      end
+
+      it 'accepts timeout as argument' do
+        timeout = 123
+        methods = { write_nonblock: :wait_writable, wait_writable: false }
+        socket = double('socket', methods).as_null_object
+        allow(subject).to receive(:socket).and_return(socket)
+
+        subject.write("PING\r\n", timeout) rescue Oxblood::RSocket::TimeoutError
+
+        expect(socket).to have_received(:wait_writable).with(timeout)
       end
     end
   end
