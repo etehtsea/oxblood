@@ -26,7 +26,7 @@ module Oxblood
       @socket = RSocket.new(opts)
 
       session = Session.new(self)
-      session.auth!(opts[:password]) if opts[:password]
+      session.auth(opts[:password]) if opts[:password]
       session.select(opts[:db]) if opts[:db]
     end
 

@@ -23,18 +23,6 @@ module Oxblood
         run(:ECHO, message)
       end
 
-      # Like {#auth}, except that if error returned, raises it.
-      #
-      # @param [String] password
-      #
-      # @raise [Protocol::RError] if error returned
-      #
-      # @return [String] 'OK'
-      def auth!(password)
-        response = auth(password)
-        error?(response) ? (raise response) : response
-      end
-
       # Returns PONG if no argument is provided, otherwise return a copy of
       # the argument as a bulk
       # @see http://redis.io/commands/ping
@@ -65,12 +53,6 @@ module Oxblood
         run(:QUIT)
       ensure
         connection.socket.close
-      end
-
-      private
-
-      def error?(response)
-        Protocol::RError === response
       end
     end
   end

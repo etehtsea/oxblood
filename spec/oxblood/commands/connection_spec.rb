@@ -42,49 +42,6 @@ RSpec.describe Oxblood::Commands::Connection do
     end
   end
 
-  describe '#auth!' do
-    context 'with password' do
-      before(:context) do
-        @redis_server = RedisServer.new(requirepass: 'hello')
-        @redis_server.start
-      end
-
-      after(:context) do
-        @redis_server.stop
-      end
-
-      let(:connection) do
-        Oxblood::Connection.new(path: @redis_server.opts[:unixsocket])
-      end
-
-      subject do
-        TestSession.new(connection)
-      end
-
-      specify do
-        expect(subject.auth!('hello')).to eq('OK')
-      end
-
-      specify do
-        error_message = 'ERR invalid password'
-
-        expect do
-          subject.auth!('wrong')
-        end.to raise_error(Oxblood::Protocol::RError, error_message)
-      end
-    end
-
-    context 'passwordless' do
-      specify do
-        error_message = 'ERR Client sent AUTH, but no password is set'
-
-        expect do
-          subject.auth!('hello')
-        end.to raise_error(Oxblood::Protocol::RError, error_message)
-      end
-    end
-  end
-
   describe '#echo' do
     specify do
       expect(subject.echo('Hello')).to eq('Hello')
