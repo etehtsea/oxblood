@@ -20,7 +20,6 @@ class TestSession
 end
 
 RSpec.shared_context 'test session' do
-
   before(:context) do
     @connection = Oxblood::Connection.new
   end
