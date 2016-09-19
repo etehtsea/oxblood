@@ -6,6 +6,7 @@ require 'oxblood/commands/keys'
 require 'oxblood/commands/lists'
 require 'oxblood/commands/sets'
 require 'oxblood/commands/sorted_sets'
+require 'oxblood/commands/transactions'
 
 module Oxblood
   module Commands
@@ -17,5 +18,6 @@ module Oxblood
     include Lists
     include Sets
     include SortedSets
+    include Transactions
   end
 end

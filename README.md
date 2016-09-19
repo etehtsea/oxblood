@@ -29,7 +29,7 @@ An experimental Redis Ruby client.
   - Sets (14/15) (See [#10](https://github.com/etehtsea/oxblood/issues/10))
   - Sorted Sets (15/21) (See [#12], [#13], [#14], [#15])
   - Strings (23/24) (See [#16](https://github.com/etehtsea/oxblood/issues/16))
-  - Transaction (0/5)
+  - Transaction (3/5) (See [#19])
 - [Pipeling](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Pipeline)
 - [Connection pooling](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Pool)
 - [Connection resiliency](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/RSocket)
@@ -60,3 +60,4 @@ The gem is available as open source under the terms of the [MIT License](http://
 [#13]: https://github.com/etehtsea/oxblood/issues/13
 [#14]: https://github.com/etehtsea/oxblood/issues/14
 [#15]: https://github.com/etehtsea/oxblood/issues/15
+[#19]: https://github.com/etehtsea/oxblood/issues/19
