@@ -15,5 +15,14 @@ RSpec.describe Oxblood::Pipeline do
       3.times { subject.echo 'hello' }
       expect(subject.sync).to match_array(Array.new(3) { 'hello' })
     end
+
+    specify do
+      responds = Array.new(2) do
+        subject.ping
+        subject.sync
+      end
+
+      expect(responds).to eq([['PONG'], ['PONG']])
+    end
   end
 end

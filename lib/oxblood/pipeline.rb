@@ -30,6 +30,8 @@ module Oxblood
 
       @connection.socket.write(serialized_commands.join)
       @connection.read_responses(@commands.size)
+    ensure
+      @commands.clear
     end
 
     private
