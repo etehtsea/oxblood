@@ -21,7 +21,7 @@ end
 
 RSpec.shared_context 'test session' do
   before(:context) do
-    @connection = Oxblood::Connection.new
+    @connection = Oxblood::Connection.new(path: RedisServer.global.opts[:unixsocket])
   end
 
   let(:connection) do

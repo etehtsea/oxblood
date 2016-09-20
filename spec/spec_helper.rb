@@ -5,6 +5,14 @@ CodeClimate::TestReporter.start
 Dir['./spec/support/**/*.rb'].sort.each { |f| require f }
 
 RSpec.configure do |c|
+  c.before(:suite) do
+    RedisServer.check_stale_pidfiles!
+  end
+
+  c.after(:suite) do
+    RedisServer.global.stop
+  end
+
   c.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end

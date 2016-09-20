@@ -1,20 +1,31 @@
 require 'securerandom'
+require 'thread'
 
 class RedisServer
   TMPDIR = File.expand_path('../../../tmp', __FILE__).freeze
-  PIDFILE = File.join(TMPDIR, 'redis-server.pid').freeze
+  LOCK = Mutex.new
+
   attr_reader :opts
+
+  def self.check_stale_pidfiles!
+    if !Dir["#{TMPDIR}/*.pid"].empty?
+      raise "Stale Redis server pids in #{TMPDIR}"
+    end
+  end
+
+  def self.global
+    return @global if defined?(@global)
+    LOCK.synchronize { @global ||= new.tap { |s| s.start } }
+  end
 
   def initialize(opts = {})
     uid = SecureRandom.hex(6)
 
-    check_pidfile!
-
     default_opts = {
       port: 0,
       loglevel: :warning,
-      pidfile: PIDFILE,
-      unixsocket: File.join(TMPDIR, "redis-#{uid}.sock")
+      pidfile: File.join(TMPDIR, "redis-server-#{uid}.pid"),
+      unixsocket: File.join(TMPDIR, "redis-#{uid}.sock"),
     }
 
     @opts = default_opts.merge!(opts)
@@ -55,10 +66,6 @@ class RedisServer
   end
 
   private
-
-  def check_pidfile!
-    raise 'Redis server is alredy started' if File.exist?(PIDFILE)
-  end
 
   def build_cmd
     cmd = Array(ENV['REDIS_SERVER_BINARY'] || 'redis-server')
