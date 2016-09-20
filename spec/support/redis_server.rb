@@ -26,6 +26,8 @@ class RedisServer
       loglevel: :warning,
       pidfile: File.join(TMPDIR, "redis-server-#{uid}.pid"),
       unixsocket: File.join(TMPDIR, "redis-#{uid}.sock"),
+      appendonly: :no,
+      save: ''
     }
 
     @opts = default_opts.merge!(opts)
