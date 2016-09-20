@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'hiredis', platforms: :mri
 gem 'oxblood', path: '..'
 gem 'benchmark-ips'
 gem 'redis'
