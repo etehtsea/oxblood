@@ -8,9 +8,10 @@ module Oxblood
   class RSocket
     TimeoutError = Class.new(RuntimeError)
 
-    # JRuby don't properly support SO_LINGER setting
+    # JRuby before 9.1.6.0 don't properly support SO_LINGER setting
     # @see https://github.com/jruby/jruby/issues/4040
-    LINGER_OPTION = if RUBY_ENGINE == 'jruby'
+    LINGER_OPTION = if RUBY_ENGINE == 'jruby' &&
+                       Gem::Version.new(JRUBY_VERSION) < Gem::Version.new('9.1.6.0')
                       [Socket::SOL_SOCKET, :LINGER, 0].freeze
                     else
                       Socket::Option.linger(true, 0)
