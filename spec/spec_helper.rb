@@ -1,7 +1,3 @@
-require 'codeclimate-test-reporter'
-CodeClimate::TestReporter.start
-
-
 Dir['./spec/support/**/*.rb'].sort.each { |f| require f }
 
 RSpec.configure do |c|

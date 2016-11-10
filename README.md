@@ -4,7 +4,6 @@
 [![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://rubydoc.info/github/etehtsea/oxblood/master/frames)
 [![Build Status](https://travis-ci.org/etehtsea/oxblood.svg?branch=master)](https://travis-ci.org/etehtsea/oxblood)
 [![Code Climate](https://codeclimate.com/github/etehtsea/oxblood/badges/gpa.svg)](https://codeclimate.com/github/etehtsea/oxblood)
-[![Test Coverage](https://codeclimate.com/github/etehtsea/oxblood/badges/coverage.svg)](https://codeclimate.com/github/etehtsea/oxblood/coverage)
 
 An experimental Redis Ruby client.
 
