@@ -24,5 +24,13 @@ RSpec.describe Oxblood::Pool do
         expect(responses).to match_array([['PONG', 'PONG'], 'PONG', ['0']])
       end
     end
+
+    context 'multi' do
+      it 'prohibit to checkin connection within transaction' do
+        expect do
+          2.times { subject.with { |session| session.multi } }
+        end.not_to raise_error
+      end
+    end
   end
 end

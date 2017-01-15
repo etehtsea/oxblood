@@ -10,6 +10,7 @@ RSpec.describe Oxblood::Commands::Transactions do
 
     specify do
       expect(subject.multi).to eq('OK')
+      expect(subject.connection.in_transaction?).to be_truthy
       expect(subject.multi).to be_a(Oxblood::Protocol::RError)
     end
   end
@@ -23,6 +24,7 @@ RSpec.describe Oxblood::Commands::Transactions do
       connection.run_command(:MULTI)
       connection.run_command(:PING)
       expect(subject.exec).to eq(['PONG'])
+      expect(subject.connection.in_transaction?).to be_falsey
     end
   end
 
@@ -34,6 +36,7 @@ RSpec.describe Oxblood::Commands::Transactions do
     specify do
       connection.run_command(:MULTI)
       expect(subject.discard).to eq('OK')
+      expect(subject.connection.in_transaction?).to be_falsey
     end
   end
 end

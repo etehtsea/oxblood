@@ -8,14 +8,14 @@ class TestSession
     @conn = conn
   end
 
+  def connection
+    @conn
+  end
+
   private
 
   def run(*command)
     @conn.run_command(*command)
-  end
-
-  def connection
-    @conn
   end
 end
 

@@ -10,6 +10,11 @@ module Oxblood
     #   @return [RSocket] resilient socket
     attr_reader :socket
 
+    # @!attribute [rw] transaction_mode
+    #   @return [Boolean] transaction status
+    # @api private
+    attr_accessor :transaction_mode
+
     # Initialize connection to Redis server
     #
     # @param [Hash] opts Connection options
@@ -24,6 +29,7 @@ module Oxblood
     #
     # @option opts [String] :path UNIX socket path
     def initialize(opts = {})
+      @in_transaction = false
       @socket = RSocket.new(opts)
 
       session = Session.new(self)
@@ -55,6 +61,14 @@ module Oxblood
     # @todo Raise specific error if server has nothing to answer.
     def read_response
       Protocol.parse(@socket)
+    end
+
+    # Connection transaction status.
+    # @api private
+    #
+    # @return [Boolean, nil] transaction status
+    def in_transaction?
+      transaction_mode
     end
   end
 end

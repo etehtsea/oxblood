@@ -39,8 +39,10 @@ module Oxblood
     #   end # => 'world'
     def with
       conn = @pool.checkout
-      yield Session.new(conn)
+      session = Session.new(conn)
+      yield(session)
     ensure
+      session.discard if conn.in_transaction?
       @pool.checkin if conn
     end
   end

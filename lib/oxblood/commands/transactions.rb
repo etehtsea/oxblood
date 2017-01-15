@@ -7,7 +7,7 @@ module Oxblood
       # @return [String] 'OK'
       # @return [RError] if multi called inside transaction
       def multi
-        run(:MULTI)
+        run(:MULTI).tap { |resp| connection.transaction_mode = true if resp == 'OK' }
       end
 
       # Execute all commands issued after MULTI
@@ -17,7 +17,7 @@ module Oxblood
       #   in the atomic transaction
       # @return [nil] when WATCH was used and execution was aborted
       def exec
-        run(:EXEC)
+        run(:EXEC).tap { connection.transaction_mode = false }
       end
 
       # Discard all commands issued after MULTI
@@ -26,7 +26,7 @@ module Oxblood
       # @return [String] 'OK'
       # @return [RError] if called without transaction started
       def discard
-        run(:DISCARD)
+        run(:DISCARD).tap { connection.transaction_mode = false }
       end
     end
   end
