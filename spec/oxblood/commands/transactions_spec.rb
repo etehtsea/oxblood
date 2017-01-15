@@ -22,6 +22,15 @@ RSpec.describe Oxblood::Commands::Transactions do
       expect(response).to be_a(Oxblood::Protocol::RError)
       expect(response.message).to match(/EXECABORT/)
     end
+
+    specify do
+      responses = subject.multi do
+        2.times { connection.run_command(:PING) }
+      end
+
+      expect(responses).to match_array(%w(PONG PONG))
+      expect(subject.connection.in_transaction?).to eq(false)
+    end
   end
 
   describe '#exec' do

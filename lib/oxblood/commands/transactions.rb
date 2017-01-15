@@ -7,7 +7,16 @@ module Oxblood
       # @return [String] 'OK'
       # @return [RError] if multi called inside transaction
       def multi
-        run(:MULTI).tap { |resp| connection.transaction_mode = true if resp == 'OK' }
+        response = run(:MULTI).tap do |resp|
+          connection.transaction_mode = true if resp == 'OK'
+        end
+
+        if block_given?
+          yield
+          exec
+        else
+          response
+        end
       end
 
       # Execute all commands issued after MULTI
