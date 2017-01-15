@@ -28,6 +28,22 @@ module Oxblood
       def discard
         run(:DISCARD).tap { connection.transaction_mode = false }
       end
+
+      # Watch the given keys to determine execution of the MULTI/EXEC block
+      # @see https://redis.io/commands/watch
+      #
+      # @return [String] 'OK'
+      def watch(*keys)
+        run(:WATCH, keys)
+      end
+
+      # Forget about all watched keys
+      # @see https://redis.io/commands/unwatch
+      #
+      # @return [String] 'OK'
+      def unwatch
+        run(:UNWATCH)
+      end
     end
   end
 end
