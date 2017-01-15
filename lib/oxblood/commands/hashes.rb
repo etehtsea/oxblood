@@ -1,9 +1,6 @@
 module Oxblood
   module Commands
     module Hashes
-      QUEUED = 'QUEUED'.freeze
-      private_constant :QUEUED
-
       # Removes the specified fields from the hash stored at key
       # @see http://redis.io/commands/hdel
       #
@@ -21,9 +18,9 @@ module Oxblood
       # @param [String] key under which hash is stored
       # @param [String] field to check for existence
       #
-      # @return [Boolean] do hash contains field or not
+      # @return [Integer] 1 if the hash contains field and 0 otherwise
       def hexists(key, field)
-        1 == run(:HEXISTS, key, field)
+        run(:HEXISTS, key, field)
       end
 
       # Get the value of a hash field
@@ -43,10 +40,10 @@ module Oxblood
       #
       # @param [String] key under which hash is stored
       #
-      # @return [Hash] of fields and their values
+      # @return [Array] list of fields and their values stored in the hash,
+      #   or an empty list when key does not exist.
       def hgetall(key)
-        response = run(:HGETALL, key)
-        response == 'QUEUED' ? response : Hash[*response]
+        run(:HGETALL, key)
       end
 
       # Increment the integer value of a hash field by the given number

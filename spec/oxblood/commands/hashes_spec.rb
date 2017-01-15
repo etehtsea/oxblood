@@ -27,16 +27,16 @@ RSpec.describe Oxblood::Commands::Hashes do
   describe '#hexists' do
     it 'existing field' do
       connection.run_command(:HSET, 'myhash', 'field1', 'foo')
-      expect(subject.hexists(:myhash, 'field1')).to eq(true)
+      expect(subject.hexists(:myhash, 'field1')).to eq(1)
     end
 
     it 'nonexistent field' do
       connection.run_command(:HSET, 'myhash', 'field1', 'foo')
-      expect(subject.hexists(:myhash, 'field2')).to eq(false)
+      expect(subject.hexists(:myhash, 'field2')).to eq(0)
     end
 
     it 'nonexistent key' do
-      expect(subject.hexists(:nonexistentkey, 'field')).to eq(false)
+      expect(subject.hexists(:nonexistentkey, 'field')).to eq(0)
     end
   end
 
@@ -55,7 +55,7 @@ RSpec.describe Oxblood::Commands::Hashes do
       connection.run_command(:HSET, 'myhash', 'f1', 'Hello')
       connection.run_command(:HSET, 'myhash', 'f2', 'World')
 
-      expect(subject.hgetall('myhash')).to eq({ 'f1' => 'Hello', 'f2' => 'World' })
+      expect(subject.hgetall('myhash')).to eq(%w(f1 Hello f2 World))
     end
   end
 
