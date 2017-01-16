@@ -14,7 +14,7 @@ module Oxblood
   #   pipeline.echo('!')
   #   pipeline.sync # => ["ping", "PONG", "!"]
   class Pipeline
-    include Oxblood::Commands
+    include Commands
 
     attr_reader :connection
 
@@ -26,12 +26,9 @@ module Oxblood
     # Sends all commands at once and reads responses
     # @return [Array] of responses
     def sync
-      serialized_commands = @commands.map do |c|
-        Oxblood::Protocol.build_command(*c)
-      end
-
-      @connection.socket.write(serialized_commands.join)
-      @connection.read_responses(@commands.size)
+      serialized_commands = @commands.map { |c| Protocol.build_command(*c) }
+      connection.socket.write(serialized_commands.join)
+      Array.new(@commands.size) { connection.read_response }
     ensure
       @commands.clear
     end

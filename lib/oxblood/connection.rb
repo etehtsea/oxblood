@@ -1,4 +1,5 @@
 require 'oxblood/protocol'
+require 'oxblood/pipeline'
 require 'oxblood/rsocket'
 require 'oxblood/session'
 
@@ -54,12 +55,6 @@ module Oxblood
     # @todo Raise specific error if server has nothing to answer.
     def read_response
       Protocol.parse(@socket)
-    end
-
-    # Read several responses from server
-    # (see #read_response)
-    def read_responses(n)
-      Array.new(n) { read_response }
     end
   end
 end

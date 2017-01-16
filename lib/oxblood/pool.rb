@@ -43,26 +43,5 @@ module Oxblood
     ensure
       @pool.checkin if conn
     end
-
-    # Run commands on a connection from pool. Connection is wrapped to
-    # the {Pipeline}. {Pipeline#sync} operation will be executed automatically
-    # at the end of a block.
-    # @yield [pipeline] provide {Pipeline} to a block
-    # @yieldreturn [Array] responses from all executed operations
-    #
-    # @example
-    #  pool = Oxblood::Pool.new(size: 8)
-    #  pool.pipelined do |pipeline|
-    #    pipeline.set('hello', 'world')
-    #    pipeline.get('hello')
-    #  end # => ['OK', 'world']
-    def pipelined
-      conn = @pool.checkout
-      pipeline = Pipeline.new(conn)
-      yield pipeline
-      pipeline.sync
-    ensure
-      @pool.checkin if conn
-    end
   end
 end

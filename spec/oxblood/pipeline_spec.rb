@@ -24,5 +24,11 @@ RSpec.describe Oxblood::Pipeline do
 
       expect(responds).to eq([['PONG'], ['PONG']])
     end
+
+    specify do
+      subject.rpush(:l, 'v')
+      subject.blpop(:l, 1)
+      expect(subject.sync.last).to match_array(%w(l v))
+    end
   end
 end

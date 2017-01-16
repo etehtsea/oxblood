@@ -16,4 +16,11 @@ RSpec.describe Oxblood::Session do
       subject.hset(:k, 'f', 'v')
     end.to raise_error(Oxblood::Protocol::RError)
   end
+
+  context '#pipelined' do
+    specify do
+      responses = subject.pipelined { |p| 2.times { p.ping } }
+      expect(responses).to match_array(['PONG', 'PONG'])
+    end
+  end
 end
