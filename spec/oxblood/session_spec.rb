@@ -23,4 +23,11 @@ RSpec.describe Oxblood::Session do
       expect(responses).to match_array(['PONG', 'PONG'])
     end
   end
+
+  context '#run_command' do
+    specify do
+      expect(subject.run_command(:CLIENT, :SETNAME, 'cust-name')).to eq('OK')
+      expect(subject.run_command(:CLIENT, :GETNAME)).to eq('cust-name')
+    end
+  end
 end

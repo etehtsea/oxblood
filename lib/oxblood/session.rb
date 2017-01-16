@@ -41,6 +41,17 @@ module Oxblood
       pipeline.sync
     end
 
+    # Send command to Redis server and read response from it.
+    # Useful for executing unimplemented in adapter Redis commands.
+    #
+    # @example
+    #   session.run_command(:CLIENT, :SETNAME, 'cust-name') => 'OK'
+    #
+    # @param [Array] command Array of command name with it's args
+    def run_command(*command)
+      connection.run_command(*command)
+    end
+
     private
 
     def run(*command)
