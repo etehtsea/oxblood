@@ -4,8 +4,8 @@ require 'oxblood'
 require 'benchmark'
 
 N = 10_000
-TASKS = 1_000
-POOL_SIZE = 32
+TASKS = 100
+POOL_SIZE = Concurrent.processor_count
 
 def worker_pool
   Concurrent::FixedThreadPool.new(POOL_SIZE * 2)
@@ -30,8 +30,12 @@ def redis
 end
 
 def oxblood
-  OxbloodPool.pipelined { |p| N.times { p.ping } }
+  OxbloodPool.with { |s| s.pipelined { |p| N.times { p.ping } } }
 end
+
+# Check that everything is working
+redis
+oxblood
 
 # Warmup JVM
 if RUBY_ENGINE == 'jruby'
