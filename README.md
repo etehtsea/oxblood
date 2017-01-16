@@ -19,7 +19,7 @@ A straightforward Redis Ruby client.
   - [Connection](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Connection)
   - Geo (0/6)
   - [Hashes](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Hashes) (14/15) (See [#3])
-  - HyperLogLog (0/3)
+  - [HyperLogLog](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/HyperLogLog)
   - [Keys](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Keys) (18/22) (See [#4], [#6], [#7], [#8])
   - [Lists](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Lists)
   - Pub/Sub (0/6)
