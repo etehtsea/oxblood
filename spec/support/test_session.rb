@@ -1,21 +1,11 @@
-require 'oxblood/commands'
+require 'oxblood/session'
 require 'oxblood/connection'
 
-class TestSession
-  include Oxblood::Commands
-
-  def initialize(conn)
-    @conn = conn
-  end
-
-  def connection
-    @conn
-  end
-
+class TestSession < Oxblood::Session
   private
 
   def run(*command)
-    @conn.run_command(*command)
+    connection.run_command(*command)
   end
 end
 
