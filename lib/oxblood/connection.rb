@@ -38,8 +38,11 @@ module Oxblood
     end
 
     # Send comand to Redis server
-    # @example send_command('CONFIG', 'GET', '*') => 32
+    # @example
+    #   send_command('CONFIG', 'GET', '*') => 32
+    #
     # @param [Array] command Array of command name with it's args
+    #
     # @return [Integer] Number of bytes written to socket
     def send_command(*command)
       @socket.write(Protocol.build_command(*command))
