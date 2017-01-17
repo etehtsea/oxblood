@@ -42,8 +42,10 @@ module Oxblood
       session = Session.new(conn)
       yield(session)
     ensure
-      session.discard if conn.in_transaction?
-      @pool.checkin if conn
+      if conn
+        session.discard if conn.in_transaction?
+        @pool.checkin
+      end
     end
   end
 end
