@@ -13,7 +13,7 @@ def worker_pool
   Concurrent::FixedThreadPool.new(POOL_SIZE)
 end
 
-RedisPool = ConnectionPool.new(size: POOL_SIZE) { Redis.new }
+RedisPool = ConnectionPool.new(size: POOL_SIZE) { Redis.new(driver: :ruby) }
 OxbloodPool = Oxblood::Pool.new(size: POOL_SIZE)
 
 def benchmark(label, &blk)

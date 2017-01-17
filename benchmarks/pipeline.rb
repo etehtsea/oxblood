@@ -11,12 +11,12 @@ def benchmark(label, &blk)
 end
 
 def redis_without
-  r = Redis.new
+  r = Redis.new(driver: :ruby)
   N.times { r.ping }
 end
 
 def redis_with
-  r = Redis.new
+  r = Redis.new(driver: :ruby)
   r.pipelined { N.times { r.ping } }
 end
 
