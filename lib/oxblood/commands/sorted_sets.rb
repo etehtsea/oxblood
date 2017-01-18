@@ -292,6 +292,45 @@ module Oxblood
         run(*args)
       end
 
+      # Add multiple sorted sets and store the resulting sorted set in a new key
+      # @see https://redis.io/commands/zunionstore
+      #
+      # @param [String] destination key
+      # @param [Integer] numkeys number of sorted sets
+      # @param [String, Array<String>] keys
+      # @param [Hash] opts
+      #
+      # @option opts [Array<Float>] :weights multiplication factor for each
+      #   input sorted set.
+      # @option opts [Symbol] :aggregate how the results of the union
+      #   are aggregated.
+      #
+      # @return [Integer] the number of elements in the resulting sorted set
+      #   at destination.
+      def zunionstore(destination, numkeys, *keys, **opts)
+        common_store(:ZUNIONSTORE, destination, numkeys, keys, opts)
+      end
+
+      # Intersect multiple sorted sets and store the resulting sorted set in
+      #   a new key.
+      # @see https://redis.io/commands/zinterstore
+      #
+      # @param [String] destination key
+      # @param [Integer] numkeys number of sorted sets
+      # @param [String, Array<String>] keys
+      # @param [Hash] opts
+      #
+      # @option opts [Array<Float>] :weights multiplication factor for each
+      #   input sorted set.
+      # @option opts [Symbol] :aggregate how the results of the union
+      #   are aggregated.
+      #
+      # @return [Integer] the number of elements in the resulting sorted set
+      #   at destination.
+      def zinterstore(destination, numkeys, *keys, **opts)
+        common_store(:ZINTERSTORE, destination, numkeys, keys, opts)
+      end
+
       private
 
       def common_rangebyscore(command_name, key, min, max, opts)
@@ -305,6 +344,20 @@ module Oxblood
       def common_range(command_name, key, start, stop, opts)
         args = [command_name, key, start, stop]
         args << :WITHSCORES if opts[:withscores]
+        run(*args)
+      end
+
+      def common_store(command_name, destination, numkeys, *keys, **opts)
+        args = keys.unshift(command_name, destination, numkeys)
+
+        if v = opts[:weights]
+          args.push(:WEIGHTS).concat(v)
+        end
+
+        if v = opts[:aggregate]
+          args.push(:AGGREGATE, v)
+        end
+
         run(*args)
       end
     end

@@ -26,7 +26,7 @@ A straightforward Redis Ruby client.
   - Scripting (0/7)
   - [Server](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Server) (2/31)
   - [Sets](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Sets)
-  - [Sorted Sets](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/SortedSets) (16/21) (See [#13], [#14])
+  - [Sorted Sets](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/SortedSets) (18/21) (See [#13])
   - [Strings](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Strings) (23/24) (See [#16])
   - [Transactions](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Transactions)
 - [Pipeling](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Pipeline)
@@ -52,6 +52,5 @@ The gem is available as open source under the terms of the [MIT License](http://
 [#6]: https://github.com/etehtsea/oxblood/issues/6
 [#7]: https://github.com/etehtsea/oxblood/issues/7
 [#13]: https://github.com/etehtsea/oxblood/issues/13
-[#14]: https://github.com/etehtsea/oxblood/issues/14
 [#16]: https://github.com/etehtsea/oxblood/issues/16
 [#19]: https://github.com/etehtsea/oxblood/issues/19
