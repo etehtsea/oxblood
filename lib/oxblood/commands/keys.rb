@@ -1,3 +1,5 @@
+require 'oxblood/commands/scan'
+
 module Oxblood
   module Commands
     module Keys
@@ -224,15 +226,7 @@ module Oxblood
       #   element is an Array of elements.
       def scan(cursor, opts = {})
         args = [:SCAN, cursor]
-
-        if v = opts[:count]
-          args.push(:COUNT, v)
-        end
-
-        if v = opts[:match]
-          args.push(:MATCH, v)
-        end
-
+        Scan.merge_opts!(args, opts)
         run(*args)
       end
     end

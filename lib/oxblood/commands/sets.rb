@@ -1,3 +1,5 @@
+require 'oxblood/commands/scan'
+
 module Oxblood
   module Commands
     module Sets
@@ -166,6 +168,25 @@ module Oxblood
       # @return [Integer] the number of elements in the resulting set
       def sunionstore(destination, *keys)
         run(*keys.unshift(:SUNIONSTORE, destination))
+      end
+
+      # Incrementally iterate Set elements
+      # @see https://redis.io/commands/sscan
+      #
+      # @param [Integer] cursor
+      # @param [Hash] opts
+      #
+      # @option opts [Integer] :count Amount of work that should be done at
+      #   every call in order to retrieve elements from the collection.
+      # @option opts [String] :match
+      #
+      # @return [Array] two elements array, where the first element is String
+      #   representing an unsigned 64 bit number (the cursor), and the second
+      #   element is an Array of elements.
+      def sscan(key, cursor, opts = {})
+        args = [:SSCAN, key, cursor]
+        Scan.merge_opts!(args, opts)
+        run(*args)
       end
     end
   end

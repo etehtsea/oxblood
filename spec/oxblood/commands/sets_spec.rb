@@ -228,4 +228,46 @@ RSpec.describe Oxblood::Commands::Sets do
     end
   end
 
+  describe '#sscan' do
+    specify do
+      subject.run_command(:SADD, :set, 'v1', 'v2', 'v3')
+
+      response = subject.sscan(:set, 0)
+
+      expect(response).to be_an(Array)
+      expect(response.first).to eq('0')
+      expect(response.last).to match_array(%w(v1 v2 v3))
+    end
+
+    context 'options' do
+      before do
+        values = (0...20).map { |n| n > 9 ? "z#{n}" : "t#{n}" }
+        args = values.unshift(:SADD, :set)
+        subject.run_command(*args)
+      end
+
+      it 'COUNT' do
+        response = subject.sscan(:set, 0, count: 2)
+
+        expect(response).to be_an(Array)
+        expect(response.first).not_to eq('0')
+        expect(response.last.size).to be >= 2
+      end
+
+      it 'MATCH' do
+        response = subject.sscan(:set, 0, match: "*t*")
+
+        expect(response).to be_an(Array)
+        expect(response.last).to all(start_with('t'))
+      end
+
+      it 'combined' do
+        response = subject.sscan(:set, 0, match: "*z*", count: 10000)
+
+        expect(response).to be_an(Array)
+        expect(response.first).to eq('0')
+        expect(response.last.size).to eq(10)
+      end
+    end
+  end
 end

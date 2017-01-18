@@ -1,3 +1,5 @@
+require 'oxblood/commands/scan'
+
 module Oxblood
   module Commands
     module Hashes
@@ -165,6 +167,25 @@ module Oxblood
       #   key does not exist
       def hvals(key)
         run(:HVALS, key)
+      end
+
+      # Incrementally iterate hash fields and associated values
+      # @see https://redis.io/commands/hscan
+      #
+      # @param [Integer] cursor
+      # @param [Hash] opts
+      #
+      # @option opts [Integer] :count Amount of work that should be done at
+      #   every call in order to retrieve elements from the collection.
+      # @option opts [String] :match
+      #
+      # @return [Array] two elements array, where the first element is String
+      #   representing an unsigned 64 bit number (the cursor), and the second
+      #   element is an Array of elements.
+      def hscan(key, cursor, opts = {})
+        args = [:HSCAN, key, cursor]
+        Scan.merge_opts!(args, opts)
+        run(*args)
       end
     end
   end

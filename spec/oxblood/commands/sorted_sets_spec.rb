@@ -183,4 +183,31 @@ RSpec.describe Oxblood::Commands::SortedSets do
     end
   end
 
+  describe '#zscan' do
+    specify do
+      subject.run_command(:ZADD, :zset, 1, 'one', 2, 'two', 3, 'three')
+
+      response = subject.zscan(:zset, 0)
+
+      expect(response).to be_an(Array)
+      expect(response.first).to eq('0')
+      expect(response.last).to match_array(%w(one 1 two 2 three 3))
+    end
+
+    context 'options' do
+      before do
+        scores = (0...20)
+        members = scores.map { |n| n > 9 ? "z#{n}" : "t#{n}" }
+        args = scores.zip(members).flatten.unshift(:ZADD, :zset)
+        subject.run_command(*args)
+      end
+
+      it 'MATCH' do
+        response = subject.zscan(:zset, 0, match: "*t*")
+
+        expect(response).to be_an(Array)
+        expect(response.last.each_slice(2).map(&:first)).to all(start_with('t'))
+      end
+    end
+  end
 end

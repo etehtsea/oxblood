@@ -1,3 +1,5 @@
+require 'oxblood/commands/scan'
+
 module Oxblood
   module Commands
     module SortedSets
@@ -254,6 +256,25 @@ module Oxblood
       # the sorted set, or key does not exists
       def zscore(key, member)
         run(:ZSCORE, key, member)
+      end
+
+      # Incrementally iterate sorted sets elements and associated scores
+      # @see https://redis.io/commands/zscan
+      #
+      # @param [Integer] cursor
+      # @param [Hash] opts
+      #
+      # @option opts [Integer] :count Amount of work that should be done at
+      #   every call in order to retrieve elements from the collection.
+      # @option opts [String] :match
+      #
+      # @return [Array] two elements array, where the first element is String
+      #   representing an unsigned 64 bit number (the cursor), and the second
+      #   element is an Array of elements.
+      def zscan(key, cursor, opts = {})
+        args = [:ZSCAN, key, cursor]
+        Scan.merge_opts!(args, opts)
+        run(*args)
       end
 
       private

@@ -18,15 +18,15 @@ A straightforward Redis Ruby client.
   - Cluster (0/20)
   - [Connection](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Connection)
   - Geo (0/6)
-  - [Hashes](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Hashes) (14/15) (See [#3])
+  - [Hashes](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Hashes)
   - [HyperLogLog](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/HyperLogLog)
   - [Keys](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Keys) (18/22) (See [#4], [#6], [#7])
   - [Lists](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Lists)
   - Pub/Sub (0/6)
   - Scripting (0/7)
   - [Server](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Server) (2/31)
-  - [Sets](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Sets) (14/15) (See [#10])
-  - [Sorted Sets](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/SortedSets) (15/21) (See [#12], [#13], [#14], [#15])
+  - [Sets](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Sets)
+  - [Sorted Sets](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/SortedSets) (16/21) (See [#12], [#13], [#14])
   - [Strings](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Strings) (23/24) (See [#16])
   - [Transactions](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Transactions)
 - [Pipeling](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Pipeline)
@@ -48,14 +48,11 @@ Bug reports and pull requests are welcome on [GitHub](https://github.com/etehtse
 ## License
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
 
-[#3]: https://github.com/etehtsea/oxblood/issues/3
 [#4]: https://github.com/etehtsea/oxblood/issues/4
 [#6]: https://github.com/etehtsea/oxblood/issues/6
 [#7]: https://github.com/etehtsea/oxblood/issues/7
-[#10]: https://github.com/etehtsea/oxblood/issues/10
 [#12]: https://github.com/etehtsea/oxblood/issues/12
 [#13]: https://github.com/etehtsea/oxblood/issues/13
 [#14]: https://github.com/etehtsea/oxblood/issues/14
-[#15]: https://github.com/etehtsea/oxblood/issues/15
 [#16]: https://github.com/etehtsea/oxblood/issues/16
 [#19]: https://github.com/etehtsea/oxblood/issues/19

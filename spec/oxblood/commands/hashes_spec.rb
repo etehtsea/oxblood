@@ -226,4 +226,32 @@ RSpec.describe Oxblood::Commands::Hashes do
       expect(subject.hvals('myhash')).to match_array([])
     end
   end
+
+  describe '#hscan' do
+    specify do
+      subject.run_command(:HMSET, :h, 'name', 'Jack', 'age', 33)
+
+      response = subject.hscan(:h, 0)
+
+      expect(response).to be_an(Array)
+      expect(response.first).to eq('0')
+      expect(response.last).to match_array(%w(name Jack age 33))
+    end
+
+    context 'options' do
+      before do
+        values = (0...20)
+        keys = values.map { |n| n > 9 ? "z#{n}" : "t#{n}" }
+        args = keys.zip(values).flatten.unshift(:HMSET, :h)
+        subject.run_command(*args)
+      end
+
+      it 'MATCH' do
+        response = subject.hscan(:h, 0, match: "*t*")
+
+        expect(response).to be_an(Array)
+        expect(response.last.each_slice(2).map(&:first)).to all(start_with('t'))
+      end
+    end
+  end
 end
