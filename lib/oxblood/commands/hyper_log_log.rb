@@ -20,7 +20,7 @@ module Oxblood
       # @param [String, Array<String>] keys
       #
       # @return [Integer] the approximated number of unique elements observed
-      #   via {pfadd}.
+      #   via {#pfadd}.
       def pfcount(*keys)
         run(*keys.unshift(:PFCOUNT))
       end
