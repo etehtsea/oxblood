@@ -208,6 +208,33 @@ module Oxblood
       def type(key)
         run(:TYPE, key)
       end
+
+      # Incrementally iterate the keys space
+      # @see https://redis.io/commands/scan
+      #
+      # @param [Integer] cursor
+      # @param [Hash] opts
+      #
+      # @option opts [Integer] :count Amount of work that should be done at
+      #   every call in order to retrieve elements from the collection.
+      # @option opts [String] :match
+      #
+      # @return [Array] two elements array, where the first element is String
+      #   representing an unsigned 64 bit number (the cursor), and the second
+      #   element is an Array of elements.
+      def scan(cursor, opts = {})
+        args = [:SCAN, cursor]
+
+        if v = opts[:count]
+          args.push(:COUNT, v)
+        end
+
+        if v = opts[:match]
+          args.push(:MATCH, v)
+        end
+
+        run(*args)
+      end
     end
   end
 end

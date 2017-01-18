@@ -271,4 +271,48 @@ RSpec.describe Oxblood::Commands::Keys do
       expect(subject.type('key')).to eq('string')
     end
   end
+
+  describe '#scan' do
+    specify do
+      subject.run_command(:MSET, :k1, 'v1', :k2, 'v2', :k3, 'v3')
+
+      response = subject.scan(0)
+
+      expect(response).to be_an(Array)
+      expect(response.first).to eq('0')
+      expect(response.last).to match_array(%w(k1 k2 k3))
+    end
+
+    context 'options' do
+      before do
+        values = (0...20)
+        keys = values.map { |n| n > 9 ? "z#{n}" : "t#{n}" }
+        args = keys.zip(values).flatten.unshift(:MSET)
+        subject.run_command(*args)
+      end
+
+      it 'COUNT' do
+        response = subject.scan(0, count: 2)
+
+        expect(response).to be_an(Array)
+        expect(response.first).not_to eq('0')
+        expect(response.last.size).to be >= 2
+      end
+
+      it 'MATCH' do
+        response = subject.scan(0, match: "*t*")
+
+        expect(response).to be_an(Array)
+        expect(response.last).to all(start_with('t'))
+      end
+
+      it 'combined' do
+        response = subject.scan(0, match: "*z*", count: 10000)
+
+        expect(response).to be_an(Array)
+        expect(response.first).to eq('0')
+        expect(response.last.size).to eq(10)
+      end
+    end
+  end
 end
