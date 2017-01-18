@@ -12,10 +12,25 @@ module Oxblood
       #
       # @param [String] key under which store set
       # @param [[Float, String], Array<[Float, String]>] args scores and members
+      # @param [Hash] opts
+      #
+      # @option opts [Boolean] :xx Only update elements that already exist.
+      #   Never add elements.
+      # @option opts [Boolean] :nx Don't update already existing elements.
+      #   Always add new elements.
+      # @option opts [Boolean] :ch Modify the return value from the number of
+      #   new elements added, to the total number of elements changed.
+      # @option opts [Boolean] :incr When this option is specified ZADD acts
+      #   like ZINCRBY. Only one score-element pair can be specified in this mode.
       #
       # @return [Integer] The number of elements added to the sorted sets, not
       #   including elements already existing for which the score was updated
-      def zadd(key, *args)
+      def zadd(key, *args, **opts)
+        args.unshift(:XX) if opts[:xx]
+        args.unshift(:NX) if opts[:nx]
+        args.unshift(:CH) if opts[:ch]
+        args.unshift(:INCR) if opts[:incr]
+
         run(*args.unshift(:ZADD, key))
       end
 

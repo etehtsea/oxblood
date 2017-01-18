@@ -11,6 +11,66 @@ RSpec.describe Oxblood::Commands::SortedSets do
       result = ['one', '1', 'two', '2', 'three', '3']
       expect(connection.run_command(*cmd)).to eq(result)
     end
+
+    context 'options', if: server_newer_than('3.0.2') do
+      it 'XX and NX at the same time' do
+        response = subject.zadd(:zset, 1, 'one', 2, 'two', nx: true, xx: true)
+        expect(response).to be_a(Oxblood::Protocol::RError)
+      end
+
+      it 'XX' do
+        subject.zadd(:zset, 99, 'one', 999, 'two')
+        response = subject.zadd(:zset, 1, 'one', 2, 'two', 3, 'three', xx: true)
+        values = subject.run_command(:ZRANGE, :zset, 0, -1, :WITHSCORES)
+
+        expect(response).to eq(0)
+        expect(values).to match_array(%w(one 1 two 2))
+      end
+
+      it 'NX' do
+        subject.zadd(:zset, 1, 'one', 2, 'two')
+        response = subject.zadd(:zset, 9, 'one', 99, 'two', 0, 'zero', nx: true)
+        values = subject.run_command(:ZRANGE, :zset, 0, -1, :WITHSCORES)
+
+        expect(response).to eq(1)
+        expect(values).to match_array(%w(zero 0 one 1 two 2))
+      end
+
+      it 'CH' do
+        subject.zadd(:zset, 999, '0')
+        resp_ch = subject.zadd(:zset, 10, '0', 1, '1', 2, '2', ch: true)
+        resp_ch_xx = subject.zadd(:zset, 0, '0', 3, '3', ch: true, xx: true)
+
+        expect(resp_ch).to eq(3)
+        expect(resp_ch_xx).to eq(1)
+      end
+
+      context 'INCR' do
+        it 'with multiple elements' do
+          response = subject.zadd(:zset, 1, 'one', 2, 'two', incr: true)
+          expect(response).to be_a(Oxblood::Protocol::RError)
+        end
+
+        it 'with one score-element pair' do
+          subject.zadd(:zset, 2, 'twelve')
+          expect(subject.zadd(:zset, 10, 'ten', incr: true)).to eq('10')
+        end
+
+        it 'combined with XX' do
+          subject.zadd(:zset, 2, 'twelve')
+
+          expect(subject.zadd(:zset, 10, 'ten', incr: true, xx: true)).to be_nil
+          expect(subject.zadd(:zset, 10, 'twelve', incr: true, xx: true)).to eq('12')
+        end
+
+        it 'combined with NX' do
+          subject.zadd(:zset, 12, 'twelve')
+
+          expect(subject.zadd(:zset, 10, 'ten', incr: true, nx: true)).to eq('10')
+          expect(subject.zadd(:zset, 10, 'twelve', incr: true, nx: true)).to be_nil
+        end
+      end
+    end
   end
 
   describe '#zcard' do
