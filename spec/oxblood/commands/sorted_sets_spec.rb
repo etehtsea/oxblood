@@ -102,6 +102,39 @@ RSpec.describe Oxblood::Commands::SortedSets do
     end
   end
 
+  describe '#zrangebylex', if: server_newer_than('2.8.9') do
+    specify do
+      elems = [0, 'a', 0, 'b', 0, 'c', 0, 'd', 0, 'e', 0, 'f', 0, 'g']
+      subject.run_command(:ZADD, :zset, elems)
+
+      expect(subject.zrangebylex(:zset, '-', '[c')).to eq(%w(a b c))
+      expect(subject.zrangebylex(:zset, '-', '(c')).to eq(%w(a b))
+      expect(subject.zrangebylex(:zset, '[aaa', '(g')).to eq(%w(b c d e f))
+      expect(subject.zrangebylex(:zset, '[aaa', '(g', limit: [1, 1])).to eq(%w(c))
+    end
+  end
+
+  describe '#zremrangebylex', if: server_newer_than('2.8.9') do
+    specify do
+      subject.run_command(:ZADD, :zset, 0, 'aaaa', 0, 'b', 0, 'c', 0, 'd', 0, 'e')
+      subject.run_command(:ZADD, :zset, 0, 'foo', 0, 'zap', 0, 'zip', 0, 'ALPHA', 0, 'alpha')
+
+      expect(subject.zremrangebylex(:zset, '[alpha', '[omega')).to eq(6)
+    end
+  end
+
+  describe '#zrevrangebylex', if: server_newer_than('2.8.9') do
+    specify do
+      elems = [0, 'a', 0, 'b', 0, 'c', 0, 'd', 0, 'e', 0, 'f', 0, 'g']
+      subject.run_command(:ZADD, :zset, elems)
+
+      expect(subject.zrevrangebylex(:zset, '[c', '-')).to eq(%w(c b a))
+      expect(subject.zrevrangebylex(:zset, '(c', '-')).to eq(%w(b a))
+      expect(subject.zrevrangebylex(:zset, '(g', '[aaa')).to eq(%w(f e d c b))
+      expect(subject.zrevrangebylex(:zset, '(g', '[aaa', limit: [1, 1])).to eq(%w(e))
+    end
+  end
+
   describe '#zlexcount' do
     specify do
       connection.run_command(:ZADD, :myzset, %w(0 a 0 b 0 c 0 d 0 e 0 f 0 g))

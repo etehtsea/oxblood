@@ -70,6 +70,51 @@ module Oxblood
         run(:ZINCRBY, key, increment, member)
       end
 
+      # Return a range of members in a sorted set, by lexicographical range.
+      # @see https://redis.io/commands/zrangebylex
+      #
+      # @param [String] key
+      # @param [String] min
+      # @param [String] max
+      # @param [Hash] opts
+      #
+      # @option opts [Array<Integer, Integer>] :limit Get a range of the matching
+      #   elements (similar to SELECT LIMIT offset, count in SQL)
+      #
+      # @return [Array<String>] list of elements in the specified score range.
+      def zrangebylex(key, min, max, opts = {})
+        common_rangebylex(:ZRANGEBYLEX, key, min, max, opts)
+      end
+
+      # Remove all members in a sorted set between the given lexicographical range.
+      # @see https://redis.io/commands/zremrangebylex
+      #
+      # @param [String] key
+      # @param [String] min
+      # @param [String] max
+      #
+      # @return [Integer] the number of elements removed.
+      def zremrangebylex(key, min, max)
+        run(:ZREMRANGEBYLEX, key, min, max)
+      end
+
+      # Return a range of members in a sorted set, by lexicographical range, ordered
+      # from higher to lower strings.
+      # @see https://redis.io/commands/zrevrangebylex
+      #
+      # @param [String] key
+      # @param [String] min
+      # @param [String] max
+      # @param [Hash] opts
+      #
+      # @option opts [Array<Integer, Integer>] :limit Get a range of the matching
+      #   elements (similar to SELECT LIMIT offset, count in SQL)
+      #
+      # @return [Array<String>] list of elements in the specified score range.
+      def zrevrangebylex(key, min, max, opts = {})
+        common_rangebylex(:ZREVRANGEBYLEX, key, min, max, opts)
+      end
+
       # Count the number of members in a sorted set between a given
       # lexicographical range
       # @see http://redis.io/commands/zlexcount
@@ -357,6 +402,13 @@ module Oxblood
         if v = opts[:aggregate]
           args.push(:AGGREGATE, v)
         end
+
+        run(*args)
+      end
+
+      def common_rangebylex(command_name, key, min, max, opts)
+        args = [command_name, key, min, max]
+        args.push(:LIMIT).concat(opts[:limit]) if opts[:limit].is_a?(Array)
 
         run(*args)
       end
