@@ -8,7 +8,7 @@ module Oxblood
   #
   # @example
   #   pool = Oxblood::Pool.new(size: 8)
-  #   pool.with { |c| c.ping } # => 'PONG'
+  #   pool.with { |s| s.ping } # => 'PONG'
   class Pool
     # Initialize connection pool
     #

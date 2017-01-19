@@ -3,7 +3,7 @@ require 'oxblood/commands'
 
 module Oxblood
   # Redis pipeling class. Commands won't be send until {#sync} is called.
-  # Error responses won't be raises and should be checked manually in the
+  # Error responses won't be raised and should be checked manually in the
   # responses array.
   # @see http://redis.io/topics/pipelining#redis-pipelining
   #
