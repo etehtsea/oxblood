@@ -12,6 +12,15 @@ A straightforward Redis Ruby client.
 - Ruby 2.2.2+
 - JRuby 9k+
 
+## Usage
+As a starting point please look at [Oxblood::Pool](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Pool) documentation.
+
+## Documentation
+Documentation and usage examples are available on [Rubydoc](http://rubydoc.info/github/etehtsea/oxblood/master/frames).
+
+## Performance
+Available benchmark results are available [here](https://github.com/etehtsea/oxblood/wiki/Performance).
+
 ## Status
 
 - Commands:
@@ -32,12 +41,6 @@ A straightforward Redis Ruby client.
 - [Pipelining](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Pipeline)
 - [Connection pooling](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Pool)
 - [Connection resiliency](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/RSocket)
-
-## Usage
-As a starting point please look at [Oxblood::Pool](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Pool) documentation.
-
-## Documentation
-Documentation and usage examples are available on [Rubydoc](http://rubydoc.info/github/etehtsea/oxblood/master/frames).
 
 ## Continuous Integration
 You can check CI status at [Travis CI](https://travis-ci.org/etehtsea/oxblood).
