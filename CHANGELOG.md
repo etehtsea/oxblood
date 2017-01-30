@@ -1,3 +1,7 @@
+## 0.3.0 (Unreleased)
+  * [#22](https://github.com/etehtsea/oxblood/issues/22):
+    Added scripting commands support - [@etehtsea](https://github.com/etehtsea)
+
 ## 0.2.0 (2017-01-18)
   * [#13](https://github.com/etehtsea/oxblood/issues/13):
     Added support for ZRANGEBYLEX/ZREMRANGEBYLEX/ZREVRANGEBYLEX - [@etehtsea](https://github.com/etehtsea)

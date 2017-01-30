@@ -32,7 +32,7 @@ Available benchmark results are available [here](https://github.com/etehtsea/oxb
   - [Keys](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Keys) (19/22) (See [#4], [#6], [#7])
   - [Lists](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Lists)
   - Pub/Sub (0/6)
-  - Scripting (0/7)
+  - [Scripting](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Scripting)
   - [Server](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Server) (2/31)
   - [Sets](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Sets)
   - [Sorted Sets](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/SortedSets)
