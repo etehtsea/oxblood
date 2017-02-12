@@ -103,7 +103,6 @@ RSpec.describe Oxblood::Commands::Hashes do
       resp = subject.hincrbyfloat('myhash', 'field', 5.0)
 
       expect(resp).to be_a(Oxblood::Protocol::RError)
-      expect(resp.message).to eq('ERR hash value is not a valid float')
     end
   end
 
