@@ -18,29 +18,27 @@ As a starting point please look at [Oxblood::Pool](http://www.rubydoc.info/githu
 ## Documentation
 Documentation and usage examples are available on [Rubydoc](http://rubydoc.info/github/etehtsea/oxblood/master/frames).
 
-## Performance
-Available benchmark results are available [here](https://github.com/etehtsea/oxblood/wiki/Performance).
-
-## Status
-
-- Commands:
-  - Cluster (0/20)
-  - [Connection](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Connection)
-  - Geo (0/6)
-  - [Hashes](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Hashes)
-  - [HyperLogLog](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/HyperLogLog)
-  - [Keys](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Keys) (19/22) (See [#4], [#6], [#7])
-  - [Lists](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Lists)
-  - Pub/Sub (0/6)
-  - [Scripting](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Scripting)
-  - [Server](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Server) (2/31)
-  - [Sets](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Sets)
-  - [Sorted Sets](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/SortedSets)
-  - [Strings](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Strings) (23/24) (See [#16])
-  - [Transactions](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Transactions)
 - [Pipelining](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Pipeline)
 - [Connection pooling](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Pool)
 - [Connection resiliency](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/RSocket)
+- Commands groups:
+  - Cluster
+  - [Connection](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Connection)
+  - Geo
+  - [Hashes](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Hashes)
+  - [HyperLogLog](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/HyperLogLog)
+  - [Keys](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Keys)
+  - [Lists](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Lists)
+  - Pub/Sub
+  - [Scripting](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Scripting)
+  - [Server](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Server)
+  - [Sets](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Sets)
+  - [Sorted Sets](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/SortedSets)
+  - [Strings](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Strings)
+  - [Transactions](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Transactions)
+
+## Performance
+Available benchmark results are available [here](https://github.com/etehtsea/oxblood/wiki/Performance).
 
 ## Continuous Integration
 You can check CI status at [Travis CI](https://travis-ci.org/etehtsea/oxblood).
