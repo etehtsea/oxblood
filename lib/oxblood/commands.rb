@@ -2,6 +2,7 @@ require 'oxblood/commands/hashes'
 require 'oxblood/commands/hyper_log_log'
 require 'oxblood/commands/strings'
 require 'oxblood/commands/connection'
+require 'oxblood/commands/geo'
 require 'oxblood/commands/server'
 require 'oxblood/commands/keys'
 require 'oxblood/commands/lists'
@@ -16,6 +17,7 @@ module Oxblood
     include HyperLogLog
     include Strings
     include Connection
+    include Geo
     include Server
     include Keys
     include Lists

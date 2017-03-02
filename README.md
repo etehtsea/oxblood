@@ -24,7 +24,7 @@ Documentation and usage examples are available on [Rubydoc](http://rubydoc.info/
 - Commands groups:
   - Cluster
   - [Connection](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Connection)
-  - Geo
+  - [Geo](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Geo)
   - [Hashes](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Hashes)
   - [HyperLogLog](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/HyperLogLog)
   - [Keys](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Keys)
