@@ -1,4 +1,6 @@
 ## 0.3.0 (Unreleased)
+  * [#26](https://github.com/etehtsea/oxblood/issues/26):
+    Added server commands support - [@etehtsea](https://github.com/etehtsea)
   * [#21](https://github.com/etehtsea/oxblood/issues/21):
     Added geo commands support - [@etehtsea](https://github.com/etehtsea)
   * [#22](https://github.com/etehtsea/oxblood/issues/22):
