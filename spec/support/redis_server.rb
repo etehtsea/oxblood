@@ -15,7 +15,10 @@ class RedisServer
 
   def self.global
     return @global if defined?(@global)
-    LOCK.synchronize { @global ||= new.tap { |s| s.start } }
+    LOCK.synchronize do
+      check_stale_pidfiles!
+      @global ||= new.tap { |s| s.start }
+    end
   end
 
   def initialize(opts = {})

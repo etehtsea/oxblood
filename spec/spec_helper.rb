@@ -1,10 +1,6 @@
 Dir['./spec/support/**/*.rb'].sort.each { |f| require f }
 
 RSpec.configure do |c|
-  c.before(:suite) do
-    RedisServer.check_stale_pidfiles!
-  end
-
   c.after(:suite) do
     RedisServer.global.stop
   end
