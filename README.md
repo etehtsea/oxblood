@@ -48,9 +48,3 @@ Bug reports and pull requests are welcome on [GitHub](https://github.com/etehtse
 
 ## License
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
-[#4]: https://github.com/etehtsea/oxblood/issues/4
-[#6]: https://github.com/etehtsea/oxblood/issues/6
-[#7]: https://github.com/etehtsea/oxblood/issues/7
-[#16]: https://github.com/etehtsea/oxblood/issues/16
-[#19]: https://github.com/etehtsea/oxblood/issues/19
