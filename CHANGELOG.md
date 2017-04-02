@@ -1,4 +1,4 @@
-## 0.3.0 (Unreleased)
+## 0.3.0 (2017-04-02)
   * [#26](https://github.com/etehtsea/oxblood/issues/26):
     Added server commands support - [@etehtsea](https://github.com/etehtsea)
   * [#21](https://github.com/etehtsea/oxblood/issues/21):
