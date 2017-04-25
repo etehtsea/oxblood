@@ -38,7 +38,7 @@ Documentation and usage examples are available on [Rubydoc](http://rubydoc.info/
   - [Transactions](http://www.rubydoc.info/github/etehtsea/oxblood/master/Oxblood/Commands/Transactions)
 
 ## Performance
-Available benchmark results are available [here](https://github.com/etehtsea/oxblood/wiki/Performance).
+Benchmark results are available [here](https://github.com/etehtsea/oxblood/wiki/Performance).
 
 ## Continuous Integration
 You can check CI status at [Travis CI](https://travis-ci.org/etehtsea/oxblood).
