@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['etehtsea@gmail.com']
 
   spec.summary       = 'A Ruby Redis client'
-  spec.description   = 'An experimental Ruby Redis client'
+  spec.description   = 'A straightforward Redis client'
   spec.homepage      = 'https://github.com/etehtsea/oxblood'
   spec.license       = 'MIT'
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
